@@ -25,6 +25,12 @@
 class ClientTestBase
 {
 public:
+  enum {
+    ERROR = 0,
+    SUCCESS = 1,
+  };
+
+public:
   ClientTestBase();
   ~ClientTestBase();
 
@@ -32,8 +38,6 @@ public:
   virtual int Test() = 0;  // Testing protocol implementation. This must be implemented in a child class.
 
   void SetSocket(igtl::Socket* socket);
-  int  IsReady();
-
   void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
   int  ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout);
   int  SkipMesage(igtl::MessageHeader* headerMsg);

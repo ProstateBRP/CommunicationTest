@@ -84,36 +84,63 @@ int ClientTestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int tim
 int ClientTestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
                                                  const char* name, const char* string)
 {
-  
+
+  int success = 0;
+
   if (strcmp(headerMsg->GetDeviceType(), "STRING") != 0)
     {
-    return 0;
+    std::cerr << "ERROR: Wrong message type." << std::endl;
+    success = 0;
     }
-
-  // Create a message buffer to receive transform data
-  igtl::StringMessage::Pointer stringMsg;
-  stringMsg = igtl::StringMessage::New();
-  stringMsg->SetMessageHeader(headerMsg);
-  stringMsg->AllocatePack();
-
-  // Receive string data from the socket
-  this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = stringMsg->Unpack(1);
-
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
     {
-    if (strcmp(stringMsg->GetDeviceName(), name) == 0 &&
-        stringMsg->GetEncoding() == 3 &&
-        strcmp(stringMsg->GetString(), string) == 0)
+    std::cerr << "ERROR: Wrong message name." << std::endl;
+    success = 0;
+    }
+  else
+    {
+    // Create a message buffer to receive transform data
+    igtl::StringMessage::Pointer stringMsg;
+    stringMsg = igtl::StringMessage::New();
+    stringMsg->SetMessageHeader(headerMsg);
+    stringMsg->AllocatePack();
+    
+    // Receive string data from the socket
+    this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+    
+    // Deserialize the transform data
+    // If you want to skip CRC check, call Unpack() without argument.
+    int c = stringMsg->Unpack(1);
+    
+    if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
       {
-      return 1;
+      if (stringMsg->GetEncoding() == 3 &&
+          strcmp(stringMsg->GetString(), string) == 0)
+        {
+        success = 1;
+        }
+      else
+        {
+        std::cerr << "ERROR: Invalid string: Encoding=" << stringMsg->GetEncoding()
+                  << ", String=" << string << std::endl;
+        success = 0;
+        }
+      }
+    else
+      {
+      std::cerr << "ERROR: Invalid CRC." << std::endl;
+      success = 0;
       }
     }
+  
+  if (!success)
+    {
+    std::cerr << "ERROR: Could not receive STRING(" << name << ", " << string << ") message." << std::endl;
+    this->Socket->CloseSocket();
+    }
 
-  return 0;
+  return success;
+
 }
 
 
@@ -121,34 +148,59 @@ int ClientTestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
                                                  const char* name, int code)
 {
   
+  int success = 0;
+  
   if (strcmp(headerMsg->GetDeviceType(), "STATUS") != 0)
     {
-    return 0;
+    std::cerr << "ERROR: Wrong message type." << std::endl;
+    success = 0;
     }
-
-  // Create a message buffer to receive transform data
-  igtl::StatusMessage::Pointer statusMsg;
-  statusMsg = igtl::StatusMessage::New();
-  statusMsg->SetMessageHeader(headerMsg);
-  statusMsg->AllocatePack();
-
-  // Receive status data from the socket
-  this->Socket->Receive(statusMsg->GetPackBodyPointer(), statusMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = statusMsg->Unpack(1);
-
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
     {
-    if (strcmp(statusMsg->GetDeviceName(), name) == 0 &&
-        statusMsg->GetCode() == code)
+    std::cerr << "ERROR: Wrong message name." << std::endl;
+    success = 0;
+    }
+  else
+    {
+    // Create a message buffer to receive transform data
+    igtl::StatusMessage::Pointer statusMsg;
+    statusMsg = igtl::StatusMessage::New();
+    statusMsg->SetMessageHeader(headerMsg);
+    statusMsg->AllocatePack();
+    
+    // Receive status data from the socket
+    this->Socket->Receive(statusMsg->GetPackBodyPointer(), statusMsg->GetPackBodySize());
+    
+    // Deserialize the transform data
+    // If you want to skip CRC check, call Unpack() without argument.
+    int c = statusMsg->Unpack(1);
+    
+    if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
       {
-      return 1;
+      if (statusMsg->GetCode() == code)
+        {
+        success = 1;
+        }
+      else
+        {
+        std::cerr << "ERROR: Invalid Code: " << code << std::endl;
+        success = 0;
+        }
+      }
+    else
+      {
+      std::cerr << "ERROR: Invalid CRC." << std::endl;
+      success = 0;
       }
     }
 
-  return 0;
+  if (!success)
+    {
+    std::cerr << "ERROR: Could not receive STATUS(" << name << ", " << code << ") message." << std::endl;
+    this->Socket->CloseSocket();
+    }
+
+  return success;
 }
 
 
@@ -156,34 +208,40 @@ int ClientTestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
 int ClientTestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
                                     const char* name, igtl::Matrix4x4& matrix, double err)
 {
+  int success = 0;
 
   if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") != 0)
     {
-    return 0;
+    std::cerr << "ERROR: Wrong message type." << std::endl;
+    success = 0;
     }
-
-  // Create a message buffer to receive transform data
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetMessageHeader(headerMsg);
-  transMsg->AllocatePack();
-
-  // Receive transform data from the socket
-  this->Socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = transMsg->Unpack(1);
-  
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
     {
-    igtl::Matrix4x4 rmatrix;
-    transMsg->GetMatrix(rmatrix);
-    if (strcmp(transMsg->GetDeviceName(), name) == 0)
+    std::cerr << "ERROR: Wrong message name." << std::endl;
+    success = 0;
+    }
+  else
+    {
+    // Create a message buffer to receive transform data
+    igtl::TransformMessage::Pointer transMsg;
+    transMsg = igtl::TransformMessage::New();
+    transMsg->SetMessageHeader(headerMsg);
+    transMsg->AllocatePack();
+    
+    // Receive transform data from the socket
+    this->Socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
+    
+    // Deserialize the transform data
+    // If you want to skip CRC check, call Unpack() without argument.
+    int c = transMsg->Unpack(1);
+    
+    if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
       {
-      if (err < 0)
+      igtl::Matrix4x4 rmatrix;
+      transMsg->GetMatrix(rmatrix);
+      if (err < 0) // Ignore error check
         {
-        return 1;
+        success = 1;
         }
       for (int i = 0; i < 4; i ++)
         {
@@ -191,15 +249,31 @@ int ClientTestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerM
           {
           if (fabs(rmatrix[i][j] - rmatrix[i][j]) <= err)
             {
-            // matrix does not match
-            return 0; 
+            std::cerr << "ERROR: Matrix does not match." << std::endl;
+            std::cerr << "==== Expected Matrix ====" << std::endl;
+            igtl::PrintMatrix(matrix);
+            std::cerr << "==== Received Matrix ====" << std::endl;
+            igtl::PrintMatrix(rmatrix);
+            success = 0;
             }
           }
         }
-      return 1;
+      success = 1;
+      }
+    else
+      {
+      std::cerr << "ERROR: Invalid CRC." << std::endl;
+      success = 0;
       }
     }
-  return 0;
+
+  if (!success)
+    {
+    std::cerr << "ERROR: Could not receive TRANSFORM(" << name << ") message" << std::endl;
+    this->Socket->CloseSocket();
+    }
+
+  return success;
 }
 
 
