@@ -16,6 +16,8 @@
 =========================================================================*/
 
 #include "ClientTestBase.h"
+#include <string.h>
+#include <stdlib.h>
 
 #include "igtlOSUtil.h"
 #include "igtlStringMessage.h"
