@@ -1,12 +1,9 @@
 /*=========================================================================
 
-  Program:   OpenIGTLink -- Example for String Message Client Program
-  Module:    $RCSfile: $
+  Program:   BRP Prostate Robot: Testing Simulator (Client)
   Language:  C++
-  Date:      $Date: $
-  Version:   $Revision: $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) Brigham and Women's Hospital. All rights reserved.
 
   This software is distributed WITHOUT ANY WARRANTY; without even
   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -18,13 +15,9 @@
 #include <math.h>
 #include <cstdlib>
 
-#include "igtlOSUtil.h"
-#include "igtlStringMessage.h"
 #include "igtlClientSocket.h"
-#include "igtlSocket.h"
-#include "igtlStatusMessage.h"
-#include "igtlTransformMessage.h"
-
+#include "ClientNormalOperationTest.h"
+/*
 int ExecNormalOperationTest(igtl::Socket* socket);
 int ExecStartUpErrorTest(igtl::Socket* socket);
 int ExecCalibrationErrorTest(igtl::Socket* socket);
@@ -35,7 +28,9 @@ int ExecEmergencyTest(igtl::Socket* socket);
 int ExecMoveToWithoutTargetTest(igtl::Socket* socket);
 int ExecAccidentalMoveToTargetTest(igtl::Socket* socket);
 int ExecHardwareErrorTest(igtl::Socket* socket);
+*/
 
+/*
 void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
 int ReceiveMessageHeader(igtl::Socket* socket, igtl::MessageHeader* headerMsg, int timeout);
 int SendStringMessage(igtl::Socket* socket, const char* name, const char* string);
@@ -47,7 +42,7 @@ int CheckAndReceiveStatusMessage(igtl::Socket* socket, igtl::MessageHeader* head
                                  const char* name, int code);
 int CheckAndReceiveTransformMessage(igtl::Socket* socket, igtl::MessageHeader* headerMsg,
                                     const char* name, igtl::Matrix4x4& matrix, double err = 1.0e-10);
-
+*/
 
 int main(int argc, char* argv[])
 {
@@ -74,6 +69,7 @@ int main(int argc, char* argv[])
     exit(0);
     }
 
+
   //------------------------------------------------------------
   // Establish Connection
 
@@ -92,34 +88,13 @@ int main(int argc, char* argv[])
   switch (test)
     {
     case 1:
-      ExecNormalOperationTest(socket);
+      {
+      ClientNormalOperationTest * cnotest = new ClientNormalOperationTest();
+      cnotest->SetSocket(socket);
+      cnotest->Exec();
       break;
-    case 2:
-      ExecStartUpErrorTest(socket);
-      break;
-    case 3:
-      ExecCalibrationErrorTest(socket);
-      break;
-    case 4:
-      ExecTargetingWithoutCalibrationTest(socket);
-      break;
-    case 5:
-      ExecOutOfRangeTest(socket);
-      break;
-    case 6:
-      ExecStopTest(socket);
-      break;
-    case 7:
-      ExecEmergencyTest(socket);
-      break;
-    case 8:
-      ExecMoveToWithoutTargetTest(socket);
-      break;
-    case 9:
-      ExecAccidentalMoveToTargetTest(socket);
-      break;
-    case 10:
-      ExecHardwareErrorTest(socket);
+      }
+    default:
       break;
     }
 
@@ -129,7 +104,7 @@ int main(int argc, char* argv[])
   socket->CloseSocket();
 }
 
-
+/*
 int ExecNormalOperationTest(igtl::Socket* socket)
 {
   
@@ -382,240 +357,4 @@ int ExecHardwareErrorTest(igtl::Socket* socket)
 }
 
 
-int ReceiveMessageHeader(igtl::Socket* socket, igtl::MessageHeader* headerMsg, int timeout)
-{
-  socket->SetTimeout(timeout);
-
-  headerMsg->InitPack();
-  int r = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
-  if (r != headerMsg->GetPackSize())
-    {
-    if (r < 0) // Timeout
-      {
-      std::cerr << "ERROR: Timeout." << std::endl;
-      socket->CloseSocket();
-      exit(0);
-      }
-    else
-      {
-      std::cerr << "ERROR: Receiving message." << std::endl;
-      socket->CloseSocket();
-      exit(0);
-      }
-    }
-  headerMsg->Unpack();
-  return 1;
-}
-
-
-int CheckAndReceiveStringMessage(igtl::Socket* socket, igtl::MessageHeader* headerMsg,
-                                 const char* name, const char* string)
-{
-  
-  if (strcmp(headerMsg->GetDeviceType(), "STRING") != 0)
-    {
-    return 0;
-    }
-
-  // Create a message buffer to receive transform data
-  igtl::StringMessage::Pointer stringMsg;
-  stringMsg = igtl::StringMessage::New();
-  stringMsg->SetMessageHeader(headerMsg);
-  stringMsg->AllocatePack();
-
-  // Receive string data from the socket
-  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = stringMsg->Unpack(1);
-
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    if (strcmp(stringMsg->GetDeviceName(), name) == 0 &&
-        stringMsg->GetEncoding() == 3 &&
-        strcmp(stringMsg->GetString(), string) == 0)
-      {
-      return 1;
-      }
-    }
-
-  return 0;
-}
-
-
-int CheckAndReceiveStatusMessage(igtl::Socket* socket, igtl::MessageHeader* headerMsg,
-                                 const char* name, int code)
-{
-  
-  if (strcmp(headerMsg->GetDeviceType(), "STATUS") != 0)
-    {
-    return 0;
-    }
-
-  // Create a message buffer to receive transform data
-  igtl::StatusMessage::Pointer statusMsg;
-  statusMsg = igtl::StatusMessage::New();
-  statusMsg->SetMessageHeader(headerMsg);
-  statusMsg->AllocatePack();
-
-  // Receive status data from the socket
-  socket->Receive(statusMsg->GetPackBodyPointer(), statusMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = statusMsg->Unpack(1);
-
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    if (strcmp(statusMsg->GetDeviceName(), name) == 0 &&
-        statusMsg->GetCode() == code)
-      {
-      return 1;
-      }
-    }
-
-  return 0;
-}
-
-
-// if err < 0, not check the matrix
-int CheckAndReceiveTransformMessage(igtl::Socket* socket, igtl::MessageHeader* headerMsg,
-                                    const char* name, igtl::Matrix4x4& matrix, double err)
-{
-
-  if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") != 0)
-    {
-    return 0;
-    }
-
-  // Create a message buffer to receive transform data
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetMessageHeader(headerMsg);
-  transMsg->AllocatePack();
-
-  // Receive transform data from the socket
-  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = transMsg->Unpack(1);
-  
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    igtl::Matrix4x4 rmatrix;
-    transMsg->GetMatrix(rmatrix);
-    if (strcmp(transMsg->GetDeviceName(), name) == 0)
-      {
-      if (err < 0)
-        {
-        return 1;
-        }
-      for (int i = 0; i < 4; i ++)
-        {
-        for (int j = 0; j < 4; j ++)
-          {
-          if (fabs(rmatrix[i][j] - rmatrix[i][j]) <= err)
-            {
-            // matrix does not match
-            return 0; 
-            }
-          }
-        }
-      return 1;
-      }
-    }
-  return 0;
-}
-
-
-int SkipMesage(igtl::Socket* socket, igtl::MessageHeader* headerMsg)
-{
-  socket->Skip(headerMsg->GetBodySizeToRead(), 0);
-  socket->CloseSocket();
-  return 1;
-}
-
-
-int SendStringMessage(igtl::Socket* socket, const char* name, const char* string)
-{
-
-  igtl::StringMessage::Pointer stringMsg;
-  stringMsg = igtl::StringMessage::New();
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->GetTime();
-
-  stringMsg->SetDeviceName(name);
-  stringMsg->SetString(string);
-  stringMsg->SetTimeStamp(ts);
-  stringMsg->Pack();
-  int r = socket->Send(stringMsg->GetPackPointer(), stringMsg->GetPackSize());
-  if (!r)
-    {
-    std::cerr << "ERROR: Seinding STRING( " << name << ", " << string << ")" << std::endl;
-    exit(0);
-    }
-  return 1;
-}
-
-
-int SendTransformMessage(igtl::Socket* socket, const char* name, igtl::Matrix4x4& matrix)
-{
-
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetDeviceName(name);
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->GetTime();
-
-  transMsg->SetMatrix(matrix);
-  transMsg->SetTimeStamp(ts);
-  transMsg->Pack();
-
-  int r = socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
-  if (!r)
-    {
-    std::cerr << "ERROR: Seinding TRANSFORM( " << name << ")" << std::endl;
-    exit(0);
-    }
-
-  return 1;
-
-}
-
-
-void GetRandomTestMatrix(igtl::Matrix4x4& matrix)
-{
-  float position[3];
-  float orientation[4];
-
-  // random position
-  static float phi = 0.0;
-  position[0] = 50.0 * cos(phi);
-  position[1] = 50.0 * sin(phi);
-  position[2] = 50.0 * cos(phi);
-  phi = phi + 0.2;
-
-  // random orientation
-  static float theta = 0.0;
-  orientation[0]=0.0;
-  orientation[1]=0.6666666666*cos(theta);
-  orientation[2]=0.577350269189626;
-  orientation[3]=0.6666666666*sin(theta);
-  theta = theta + 0.1;
-
-  //igtl::Matrix4x4 matrix;
-  igtl::QuaternionToMatrix(orientation, matrix);
-
-  matrix[0][3] = position[0];
-  matrix[1][3] = position[1];
-  matrix[2][3] = position[2];
-  
-  igtl::PrintMatrix(matrix);
-}
-
+*/

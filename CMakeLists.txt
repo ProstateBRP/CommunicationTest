@@ -9,8 +9,15 @@ find_package(OpenIGTLink REQUIRED)
 
 include(${OpenIGTLink_USE_FILE})
 
+set(CLIENT_SOURCE
+  ClientTestBase.cxx
+  ClientNormalOperationTest.cxx
+  TestSimulatorClient.cxx
+)
+
+
 ADD_EXECUTABLE(TestSimulatorServer  TestSimulatorServer.cxx)
 TARGET_LINK_LIBRARIES(TestSimulatorServer OpenIGTLink)
 
-ADD_EXECUTABLE(TestSimulatorClient  TestSimulatorClient.cxx)
+ADD_EXECUTABLE(TestSimulatorClient ${CLIENT_SOURCE})
 TARGET_LINK_LIBRARIES(TestSimulatorClient OpenIGTLink)

@@ -1,12 +1,9 @@
 /*=========================================================================
 
-  Program:   Open IGT Link -- Example for Data Receiving Server Program
-  Module:    $RCSfile: $
+  Program:   BRP Prostate Robot: Testing Simulator (Server)
   Language:  C++
-  Date:      $Date: $
-  Version:   $Revision: $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) Brigham and Women's Hospital. All rights reserved.
 
   This software is distributed WITHOUT ANY WARRANTY; without even
   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
