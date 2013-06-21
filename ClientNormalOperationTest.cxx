@@ -38,9 +38,9 @@ int ClientNormalOperationTest::Test()
   int queryCounter = 0;
   igtl::MessageHeader::Pointer headerMsg;
   headerMsg = igtl::MessageHeader::New();
-  
+
   SendStringMessage("CMD_0001", "START_UP");
-  ReceiveMessageHeader(headerMsg, 100);
+  ReceiveMessageHeader(headerMsg, 1000);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return ERROR;
   ReceiveMessageHeader(headerMsg, 10000);
   if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return ERROR;

@@ -288,6 +288,7 @@ int ClientTestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 int ClientTestBase::SendStringMessage(const char* name, const char* string)
 {
 
+  std::cerr << "-- Seinding STRING( " << name << ", " << string << ")" << std::endl;
   igtl::StringMessage::Pointer stringMsg;
   stringMsg = igtl::StringMessage::New();
 
@@ -311,6 +312,7 @@ int ClientTestBase::SendStringMessage(const char* name, const char* string)
 
 int ClientTestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 {
+  std::cerr << "-- Seinding TRANSFORM( " << name << ")" << std::endl;
 
   igtl::TransformMessage::Pointer transMsg;
   transMsg = igtl::TransformMessage::New();
