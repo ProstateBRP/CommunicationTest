@@ -33,7 +33,7 @@
 #include "igtlPointMessage.h"
 #include "igtlStringMessage.h"
 #include "igtlBindMessage.h"
-#include "igtlCapabilityMessage.h"
+//#include "igtlCapabilityMessage.h"
 #endif //OpenIGTLink_PROTOCOL_VERSION >= 2
 
 
@@ -46,7 +46,7 @@ int ReceiveStatus(igtl::Socket * socket, igtl::MessageHeader * header);
 int ReceivePoint(igtl::Socket * socket, igtl::MessageHeader * header);
 int ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header);
 int ReceiveBind(igtl::Socket * socket, igtl::MessageHeader * header);
-int ReceiveCapability(igtl::Socket * socket, igtl::MessageHeader * header);
+//int ReceiveCapability(igtl::Socket * socket, igtl::MessageHeader * header);
 #endif //OpenIGTLink_PROTOCOL_VERSION >= 2
 
 int main(int argc, char* argv[])
@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
           }
         else if (strcmp(headerMsg->GetDeviceType(), "CAPABILITY") == 0)
           {
-          ReceiveCapability(socket, headerMsg);
+          //ReceiveCapability(socket, headerMsg);
           }
 #endif //OpenIGTLink_PROTOCOL_VERSION >= 2
         else
@@ -460,7 +460,7 @@ int ReceiveBind(igtl::Socket * socket, igtl::MessageHeader * header)
   return 1;
 }
 
-
+/*
 int ReceiveCapability(igtl::Socket * socket, igtl::MessageHeader * header)
 {
   
@@ -491,6 +491,6 @@ int ReceiveCapability(igtl::Socket * socket, igtl::MessageHeader * header)
   return 1;
   
 }
-
+*/
 
 #endif //OpenIGTLink_PROTOCOL_VERSION >= 2

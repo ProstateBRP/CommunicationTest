@@ -15,6 +15,8 @@
 
 =========================================================================*/
 
+#include <string.h>
+
 #include "igtlOSUtil.h"
 #include "igtlStringMessage.h"
 #include "igtlClientSocket.h"
