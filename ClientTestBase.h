@@ -21,8 +21,9 @@
 #include "igtlSocket.h"
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
+#include "CommunicationTestBase.h"
 
-class ClientTestBase
+class ClientTestBase : public CommunicationTestBase
 {
 public:
   enum {
@@ -34,21 +35,10 @@ public:
   ClientTestBase();
   ~ClientTestBase();
 
+  virtual const char* Name()=0;
+
   virtual int Exec();
   virtual int Test() = 0;  // Testing protocol implementation. This must be implemented in a child class.
-
-  void SetSocket(igtl::Socket* socket);
-  void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
-  int  ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout);
-  int  SkipMesage(igtl::MessageHeader* headerMsg);
-  int  SendStringMessage(const char* name, const char* string);
-  int  SendTransformMessage(const char* name, igtl::Matrix4x4& matrix);
-  int  CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
-                                    const char* name, const char* string);
-  int  CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
-                                    const char* name, int code);
-  int  CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
-                                       const char* name, igtl::Matrix4x4& matrix, double err = 1.0e-10);
 
 protected:
 

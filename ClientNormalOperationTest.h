@@ -27,6 +27,8 @@ public:
   ClientNormalOperationTest();
   ~ClientNormalOperationTest();
 
+  virtual const char* Name() { return "Normal Operation Test"; };
+
   virtual int Test();
 
 };
