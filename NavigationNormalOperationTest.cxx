@@ -24,18 +24,18 @@
 #include "igtlStatusMessage.h"
 #include "igtlTransformMessage.h"
 
-#include "ClientNormalOperationTest.h"
+#include "NavigationNormalOperationTest.h"
 
 
-ClientNormalOperationTest::ClientNormalOperationTest()
+NavigationNormalOperationTest::NavigationNormalOperationTest()
 {
 }
 
-ClientNormalOperationTest::~ClientNormalOperationTest()
+NavigationNormalOperationTest::~NavigationNormalOperationTest()
 {
 }
 
-int ClientNormalOperationTest::Test()
+int NavigationNormalOperationTest::Test()
 {
   int queryCounter = 0;
   igtl::MessageHeader::Pointer headerMsg;

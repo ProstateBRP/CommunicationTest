@@ -15,14 +15,14 @@
 
 =========================================================================*/
 
-#ifndef __CommunicationTestBase_h
-#define __CommunicationTestBase_h
+#ifndef __TestBase_h
+#define __TestBase_h
 
 #include "igtlSocket.h"
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
 
-class CommunicationTestBase
+class TestBase
 {
 public:
   enum {
@@ -31,8 +31,8 @@ public:
   };
 
 public:
-  CommunicationTestBase();
-  ~CommunicationTestBase();
+  TestBase();
+  ~TestBase();
 
   virtual const char* Name()=0;
 
@@ -54,4 +54,4 @@ protected:
   igtl::Socket::Pointer Socket;
 };
 
-#endif //__CommunicationTestBase_h
+#endif //__TestBase_h

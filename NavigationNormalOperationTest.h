@@ -15,38 +15,24 @@
 
 =========================================================================*/
 
-#include "ClientTestBase.h"
-#include <string.h>
-#include <stdlib.h>
+#ifndef __NavigationNormalOperationTest_h
+#define __NavigationNormalOperationTest_h
 
-#include "igtlOSUtil.h"
-#include "igtlStringMessage.h"
-#include "igtlClientSocket.h"
-#include "igtlStatusMessage.h"
-#include "igtlTransformMessage.h"
-#include <cmath>
+#include "igtlSocket.h"
+#include "NavigationTestBase.h"
 
-ClientTestBase::ClientTestBase()
+class NavigationNormalOperationTest : public NavigationTestBase
 {
-}
+public:
+  NavigationNormalOperationTest();
+  ~NavigationNormalOperationTest();
 
+  virtual const char* Name() { return "Normal Operation Test"; };
 
-ClientTestBase::~ClientTestBase()
-{
-}
+  virtual int Test();
 
+};
 
-int ClientTestBase::Exec()
-{
-  if (this->Socket.IsNotNull())
-    {
-    return this->Test();
-    }
-  else
-    {
-    std::cerr << "ERROR: Socket is not available."  << std::endl;
-    return 0;
-    }
-}
+#endif //__NavigationNormalOperationTest_h
 
 

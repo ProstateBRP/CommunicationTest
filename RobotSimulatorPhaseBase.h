@@ -22,7 +22,7 @@
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
 
-class RobotSimulatorPhaseBase : public CommunicationTestBase
+class RobotSimulatorPhaseBase : public TestBase
 {
 public:
 

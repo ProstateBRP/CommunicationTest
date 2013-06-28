@@ -15,34 +15,38 @@
 
 =========================================================================*/
 
-#ifndef __ClientTestBase_h
-#define __ClientTestBase_h
+#include "NavigationTestBase.h"
+#include <string.h>
+#include <stdlib.h>
 
-#include "igtlSocket.h"
-#include "igtlMath.h"
-#include "igtlMessageBase.h"
-#include "CommunicationTestBase.h"
+#include "igtlOSUtil.h"
+#include "igtlStringMessage.h"
+#include "igtlClientSocket.h"
+#include "igtlStatusMessage.h"
+#include "igtlTransformMessage.h"
+#include <cmath>
 
-class ClientTestBase : public CommunicationTestBase
+NavigationTestBase::NavigationTestBase()
 {
-public:
-  enum {
-    ERROR = 0,
-    SUCCESS = 1,
-  };
+}
 
-public:
-  ClientTestBase();
-  ~ClientTestBase();
 
-  virtual const char* Name()=0;
+NavigationTestBase::~NavigationTestBase()
+{
+}
 
-  virtual int Exec();
-  virtual int Test() = 0;  // Testing protocol implementation. This must be implemented in a child class.
 
-protected:
+int NavigationTestBase::Exec()
+{
+  if (this->Socket.IsNotNull())
+    {
+    return this->Test();
+    }
+  else
+    {
+    std::cerr << "ERROR: Socket is not available."  << std::endl;
+    return 0;
+    }
+}
 
-  igtl::Socket::Pointer Socket;
-};
 
-#endif //__ClientTestBase_h

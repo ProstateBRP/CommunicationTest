@@ -20,7 +20,7 @@
 #include <cstdlib>
 
 #include "igtlClientSocket.h"
-#include "ClientNormalOperationTest.h"
+#include "NavigationNormalOperationTest.h"
 /*
 int ExecNormalOperationTest(igtl::Socket* socket);
 int ExecStartUpErrorTest(igtl::Socket* socket);
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     {
     case 1:
       {
-      ClientNormalOperationTest * cnotest = new ClientNormalOperationTest();
+      NavigationNormalOperationTest * cnotest = new NavigationNormalOperationTest();
       cnotest->SetSocket(socket);
       cnotest->Exec();
       break;

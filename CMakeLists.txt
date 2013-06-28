@@ -10,17 +10,19 @@ find_package(OpenIGTLink REQUIRED)
 include(${OpenIGTLink_USE_FILE})
 
 set(NAVIGATION_SIM_SOURCE
-  CommunicationTestBase.cxx
-  ClientTestBase.cxx
-  ClientNormalOperationTest.cxx
-  TestSimulatorClient.cxx
+  NavigationNormalOperationTest.cxx
+  NavigationNormalOperationTest.h
+  NavigationTestBase.cxx
+  NavigationTestBase.h
+  NavigationTestSimulator.cxx
+  TestBase.cxx
 )
 
 set(ROBOT_SIM_SOURCE
 )
 
-#ADD_EXECUTABLE(TestSimulatorServer  ${ROBOT_SIM_SOURCE)
-#TARGET_LINK_LIBRARIES(TestSimulatorServer OpenIGTLink)
+#ADD_EXECUTABLE(RobotTestSimulator  ${ROBOT_SIM_SOURCE)
+#TARGET_LINK_LIBRARIES(RobotTestSimulator OpenIGTLink)
 
-ADD_EXECUTABLE(TestSimulatorClient ${NAVIGATION_SIM_SOURCE})
-TARGET_LINK_LIBRARIES(TestSimulatorClient OpenIGTLink)
+ADD_EXECUTABLE(NavigationTestSimulator ${NAVIGATION_SIM_SOURCE})
+TARGET_LINK_LIBRARIES(NavigationTestSimulator OpenIGTLink)

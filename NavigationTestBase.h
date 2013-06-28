@@ -15,24 +15,34 @@
 
 =========================================================================*/
 
-#ifndef __ClientNormalOperationTest_h
-#define __ClientNormalOperationTest_h
+#ifndef __NavigationTestBase_h
+#define __NavigationTestBase_h
 
 #include "igtlSocket.h"
-#include "ClientTestBase.h"
+#include "igtlMath.h"
+#include "igtlMessageBase.h"
+#include "TestBase.h"
 
-class ClientNormalOperationTest : public ClientTestBase
+class NavigationTestBase : public TestBase
 {
 public:
-  ClientNormalOperationTest();
-  ~ClientNormalOperationTest();
+  enum {
+    ERROR = 0,
+    SUCCESS = 1,
+  };
 
-  virtual const char* Name() { return "Normal Operation Test"; };
+public:
+  NavigationTestBase();
+  ~NavigationTestBase();
 
-  virtual int Test();
+  virtual const char* Name()=0;
 
+  virtual int Exec();
+  virtual int Test() = 0;  // Testing protocol implementation. This must be implemented in a child class.
+
+protected:
+
+  igtl::Socket::Pointer Socket;
 };
 
-#endif //__ClientNormalOperationTest_h
-
-
+#endif //__NavigationTestBase_h

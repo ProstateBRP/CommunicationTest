@@ -15,7 +15,7 @@
 
 =========================================================================*/
 
-#include "CommunicationTestBase.h"
+#include "TestBase.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -26,23 +26,23 @@
 #include "igtlTransformMessage.h"
 #include <cmath>
 
-CommunicationTestBase::CommunicationTestBase()
+TestBase::TestBase()
 {
 }
 
 
-CommunicationTestBase::~CommunicationTestBase()
+TestBase::~TestBase()
 {
 }
 
 
-void CommunicationTestBase::SetSocket(igtl::Socket* socket)
+void TestBase::SetSocket(igtl::Socket* socket)
 {
   this->Socket = socket;
 }
 
 
-int CommunicationTestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout)
+int TestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout)
 {
 
   this->Socket->SetTimeout(timeout);
@@ -69,7 +69,7 @@ int CommunicationTestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, 
 }
 
 
-int CommunicationTestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
+int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
                                                  const char* name, const char* string)
 {
 
@@ -132,7 +132,7 @@ int CommunicationTestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* hea
 }
 
 
-int CommunicationTestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
+int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
                                                  const char* name, int code)
 {
   
@@ -193,7 +193,7 @@ int CommunicationTestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* hea
 
 
 // if err < 0, not check the matrix
-int CommunicationTestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
+int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
                                     const char* name, igtl::Matrix4x4& matrix, double err)
 {
   int success = 0;
@@ -265,7 +265,7 @@ int CommunicationTestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* 
 }
 
 
-int CommunicationTestBase::SkipMesage(igtl::MessageHeader* headerMsg)
+int TestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 {
   this->Socket->Skip(headerMsg->GetBodySizeToRead(), 0);
   this->Socket->CloseSocket();
@@ -273,7 +273,7 @@ int CommunicationTestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 }
 
 
-int CommunicationTestBase::SendStringMessage(const char* name, const char* string)
+int TestBase::SendStringMessage(const char* name, const char* string)
 {
 
   std::cerr << "-- Seinding STRING( " << name << ", " << string << ")" << std::endl;
@@ -298,7 +298,7 @@ int CommunicationTestBase::SendStringMessage(const char* name, const char* strin
 }
 
 
-int CommunicationTestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
+int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 {
   std::cerr << "-- Seinding TRANSFORM( " << name << ")" << std::endl;
 
@@ -326,7 +326,7 @@ int CommunicationTestBase::SendTransformMessage(const char* name, igtl::Matrix4x
 }
 
 
-void CommunicationTestBase::GetRandomTestMatrix(igtl::Matrix4x4& matrix)
+void TestBase::GetRandomTestMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];
   float orientation[4];
