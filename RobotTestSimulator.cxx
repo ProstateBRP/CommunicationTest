@@ -20,6 +20,8 @@
 #include <math.h>
 #include <cstdlib>
 #include <cstring>
+#include <string>
+#include <vector>
 
 #include "igtlOSUtil.h"
 #include "igtlMessageHeader.h"
@@ -32,12 +34,13 @@
 #include "igtlStringMessage.h"
 #include "igtlBindMessage.h"
 
-int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader * header);
-int ReceivePosition(igtl::Socket * socket, igtl::MessageHeader * header);
-int ReceiveStatus(igtl::Socket * socket, igtl::MessageHeader * header);
-int ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header);
+#include "RobotSimulatorPhaseBase.h"
+#include "RobotSimulatorUndefinedPhase.h"
+#include "RobotSimulatorStartUpPhase.h"
+
 
 int Session(igtl::Socket * socket);
+
 int main(int argc, char* argv[])
 {
   //------------------------------------------------------------
@@ -87,136 +90,50 @@ int main(int argc, char* argv[])
 
 int Session(igtl::Socket * socket)
 {
+  std::vector< RobotSimulatorPhaseBase* > workphase;
+
+  workphase.push_back(new RobotSimulatorUndefinedPhase);
+  workphase.push_back(new RobotSimulatorStartUpPhase);
+  //workphase.push(new RobotSimulatorStartUpPhase);
+
+  //------------------------------------------------------------
+  // Set socket.
+  std::vector< RobotSimulatorPhaseBase* >::iterator iter;
+  for (iter = workphase.begin(); iter != workphase.end(); iter ++)
+    {
+    (*iter)->SetSocket(socket);
+    }
+
+  //------------------------------------------------------------
+  // Set undefined phase as the current phase;
+  std::vector<  RobotSimulatorPhaseBase* >::iterator currentPhase = workphase.begin();
+
+  int connect = 1;
 
   //------------------------------------------------------------
   // loop
-  for (;;)
+  while (connect)
     {
-    //// Check data type and receive data body
-    //if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
-    //  {
-    //  std::string str;
-    //  ReceiveString(socket, headerMsg, str);
-    //  }
-    //if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
-    //  {
-    //  ReceiveTransform(socket, headerMsg);
-    //  }
-    //else if (strcmp(headerMsg->GetDeviceType(), "STATUS") == 0)
-    //  {
-    //  ReceiveStatus(socket, headerMsg);
-    //  }
-    //else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
-    //  {
-    //  ReceiveString(socket, headerMsg);
-    //  }
-    //else
-    //  {
-    //  // if the data type is unknown, skip reading.
-    //  std::cerr << "Receiving : " << headerMsg->GetDeviceType() << std::endl;
-    //  std::cerr << "Size : " << headerMsg->GetBodySizeToRead() << std::endl;
-    //  socket->Skip(headerMsg->GetBodySizeToRead(), 0);
-    //  }
+    if ((*currentPhase)->Process())
+      {
+      // If Process() returns 1, phase change has been requested.
+      std::string requestedWorkphase = (*currentPhase)->GetNextWorkPhase();
+      std::string queryID = (*currentPhase)->GetQueryID();
+      
+      // Find the requested workphase
+      std::vector<  RobotSimulatorPhaseBase* >::iterator iter;
+      for (iter = workphase.begin(); iter != workphase.end(); iter ++)
+        {
+        if (strcmp((*iter)->Name(), requestedWorkphase.c_str()) == 0)
+          {
+          // Change the current phase
+          currentPhase = iter;
+          (*currentPhase)->Enter(queryID.c_str()); // Initialization process
+          }
+        }
+      }
     }
-  return 1;
-}
-
-
-const char* CheckPhaseTransition(igtl::Socket * socket, igtl::MessageHeader * header)
-{
-  return NULL;
-}
-
-int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader * header)
-{
-  std::cerr << "Receiving TRANSFORM data type." << std::endl;
   
-  // Create a message buffer to receive transform data
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetMessageHeader(header);
-  transMsg->AllocatePack();
-  
-  // Receive transform data from the socket
-  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
-  
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = transMsg->Unpack(1);
-  
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    // Retrive the transform data
-    igtl::Matrix4x4 matrix;
-    transMsg->GetMatrix(matrix);
-    igtl::PrintMatrix(matrix);
-    return 1;
-    }
-
-  return 0;
-
-}
-
-
-
-int ReceiveStatus(igtl::Socket * socket, igtl::MessageHeader * header)
-{
-
-  std::cerr << "Receiving STATUS data type." << std::endl;
-
-  // Create a message buffer to receive transform data
-  igtl::StatusMessage::Pointer statusMsg;
-  statusMsg = igtl::StatusMessage::New();
-  statusMsg->SetMessageHeader(header);
-  statusMsg->AllocatePack();
-  
-  // Receive transform data from the socket
-  socket->Receive(statusMsg->GetPackBodyPointer(), statusMsg->GetPackBodySize());
-  
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = statusMsg->Unpack(1);
-  
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    std::cerr << "========== STATUS ==========" << std::endl;
-    std::cerr << " Code      : " << statusMsg->GetCode() << std::endl;
-    std::cerr << " SubCode   : " << statusMsg->GetSubCode() << std::endl;
-    std::cerr << " Error Name: " << statusMsg->GetErrorName() << std::endl;
-    std::cerr << " Status    : " << statusMsg->GetStatusString() << std::endl;
-    std::cerr << "============================" << std::endl;
-    }
-
-  return 0;
-
-}
-
-
- int ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header, std::string& str)
-{
-
-  std::cerr << "Receiving STRING data type." << std::endl;
-
-  // Create a message buffer to receive transform data
-  igtl::StringMessage::Pointer stringMsg;
-  stringMsg = igtl::StringMessage::New();
-  stringMsg->SetMessageHeader(header);
-  stringMsg->AllocatePack();
-
-  // Receive transform data from the socket
-  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
-
-  // Deserialize the transform data
-  // If you want to skip CRC check, call Unpack() without argument.
-  int c = stringMsg->Unpack(1);
-
-  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
-    {
-    str = stringMsg->GetString();
-    //std::cerr << "Encoding: " << stringMsg->GetEncoding() << "; "
-    //          << "String: " << stringMsg->GetString() << std::endl;
-    }
-
   return 1;
 }
 

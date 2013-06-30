@@ -20,6 +20,8 @@ set(NAVIGATION_SIM_SOURCE
 
 set(ROBOT_SIM_SOURCE
   RobotSimulatorPhaseBase.cxx
+  RobotSimulatorUndefinedPhase.cxx
+  RobotSimulatorStartUpPhase.cxx
   RobotTestSimulator.cxx
   TestBase.cxx
 )

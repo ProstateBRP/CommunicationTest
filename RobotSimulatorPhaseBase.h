@@ -33,8 +33,12 @@ public:
   virtual const char* Name() { return "NONE"; };
 
   // Enter() will be called when the workphase is switched from another
-  // workphase
-  virtual int Enter(const char* queryID) = 0;
+  // workphase. Enter() calls Initialize() which implements actual
+  // initialization process for this workphase.
+  virtual int Enter(const char* queryID);
+
+  // Initialization process. This must be implemented in child classes.
+  virtual int Initialize() = 0;
 
   // Process() will be called by the main session loop.
   // It checks if any work phase change request is recevied first. If not it calles

@@ -15,22 +15,22 @@
 
 =========================================================================*/
 
-#ifndef __RobotSimulatorStartUpPhase_h
-#define __RobotSimulatorStartUpPhase_h
+#ifndef __RobotSimulatorUndefinedPhase_h
+#define __RobotSimulatorUndefinedPhase_h
 
 #include "igtlSocket.h"
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
 #include "RobotSimulatorPhaseBase.h"
 
-class RobotSimulatorStartUpPhase : public RobotSimulatorPhaseBase
+class RobotSimulatorUndefinedPhase : public RobotSimulatorPhaseBase
 {
 public:
 
-  RobotSimulatorStartUpPhase();
-  ~RobotSimulatorStartUpPhase();
+  RobotSimulatorUndefinedPhase();
+  ~RobotSimulatorUndefinedPhase();
 
-  virtual const char* Name() { return "START_UP"; };
+  virtual const char* Name() { return "UNDEFINED"; };
 
   virtual int Initialize();
   virtual int MessageHandler(igtl::MessageHeader* headerMsg);
@@ -39,4 +39,4 @@ protected:
 
 };
 
-#endif //__RobotSimulatorStartUpPhase_h
+#endif //__RobotSimulatorUndefinedPhase_h

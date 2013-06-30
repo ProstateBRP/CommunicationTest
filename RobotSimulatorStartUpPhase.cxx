@@ -36,17 +36,13 @@ RobotSimulatorStartUpPhase::~RobotSimulatorStartUpPhase()
 {
 }
 
-int RobotSimulatorStartUpPhase::Enter(const char* queryID)
+int RobotSimulatorStartUpPhase::Initialize()
 {
-  // Send acknowledgement message with query ID
-  // Should be moved to state transition process?
-  std::stringstream ss;
-  ss << "ACK_" << queryID << std::endl;
-  this->SendStringMessage(ss.str().c_str(), this->Name());
 
   // Send Status after waiting for 2 seconds (mimicking initialization process)
   igtl::Sleep(2000); // wait for 2000 msec
   this->SendStatusMessage(this->Name(), 1, 0);
+  return 1;
 }
 
 
