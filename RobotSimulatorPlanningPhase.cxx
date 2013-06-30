@@ -15,7 +15,7 @@
 
 =========================================================================*/
 
-#include "RobotSimulatorUndefinedPhase.h"
+#include "RobotSimulatorPlanningPhase.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -26,23 +26,27 @@
 #include "igtlTransformMessage.h"
 #include <cmath>
 
-RobotSimulatorUndefinedPhase::RobotSimulatorUndefinedPhase() :
+RobotSimulatorPlanningPhase::RobotSimulatorPlanningPhase() :
   RobotSimulatorPhaseBase()
 {
 }
 
 
-RobotSimulatorUndefinedPhase::~RobotSimulatorUndefinedPhase()
+RobotSimulatorPlanningPhase::~RobotSimulatorPlanningPhase()
 {
 }
 
-int RobotSimulatorUndefinedPhase::Initialize()
+int RobotSimulatorPlanningPhase::Initialize()
 {
+
+  // Send Status after waiting for 2 seconds (mimicking initialization process)
+  igtl::Sleep(2000); // wait for 2000 msec
+  this->SendStatusMessage(this->Name(), 1, 0);
   return 1;
 }
 
 
-int RobotSimulatorUndefinedPhase::MessageHandler(igtl::MessageHeader* headerMsg)
+int RobotSimulatorPlanningPhase::MessageHandler(igtl::MessageHeader* headerMsg)
 {
 
   if (RobotSimulatorPhaseBase::MessageHandler(headerMsg))

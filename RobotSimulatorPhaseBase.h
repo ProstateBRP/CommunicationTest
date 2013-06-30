@@ -48,7 +48,7 @@ public:
 
   // MessageHandler() defines workphase-specific message handling.
   // The function needs to be implemented in child classes.
-  virtual int MessageHandler(igtl::MessageHeader* headerMsg) = 0; // Message handler
+  virtual int MessageHandler(igtl::MessageHeader* headerMsg); // Message handler
 
   std::string GetNextWorkPhase() { return this->NextWorkphase; };
   std::string GetQueryID() { return this->QueryID; };

@@ -73,6 +73,25 @@ int RobotSimulatorPhaseBase::Process()
 
 }
 
+int RobotSimulatorPhaseBase::MessageHandler(igtl::MessageHeader* headerMsg)
+{
+  /// Check if GET_TRANSFORM has been received
+  if (strcmp(headerMsg->GetDeviceType(), "GET_TRANSFORM") == 0 &&
+      strncmp(headerMsg->GetDeviceName(), "CURRENT_POSITION", 4) == 0)
+    {
+    return 1;
+    }
+  /// Check if GET_STATUS has been received
+  else if (strcmp(headerMsg->GetDeviceType(), "GET_STATUS") == 0 &&
+           strncmp(headerMsg->GetDeviceName(), "CURRENT_STATUS", 4) == 0)
+    {
+    this->SendStatusMessage(this->Name(), 1, 0);
+    return 1;
+    }
+  return 0;
+
+}
+
 
 int RobotSimulatorPhaseBase::CheckWorkphaseChange(igtl::MessageHeader* headerMsg)
 {

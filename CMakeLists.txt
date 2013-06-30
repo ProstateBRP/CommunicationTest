@@ -22,6 +22,7 @@ set(ROBOT_SIM_SOURCE
   RobotSimulatorPhaseBase.cxx
   RobotSimulatorUndefinedPhase.cxx
   RobotSimulatorStartUpPhase.cxx
+  RobotSimulatorPlanningPhase.cxx
   RobotTestSimulator.cxx
   TestBase.cxx
 )
