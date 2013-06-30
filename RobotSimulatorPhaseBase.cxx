@@ -36,7 +36,7 @@ RobotSimulatorPhaseBase::~RobotSimulatorPhaseBase()
 {
 }
 
-const char* RobotSimulatorPhaseBase::Process()
+int RobotSimulatorPhaseBase::Process()
 {
   // Create a message buffer to receive header
   igtl::MessageHeader::Pointer headerMsg;
@@ -44,16 +44,22 @@ const char* RobotSimulatorPhaseBase::Process()
 
   ReceiveMessageHeader(headerMsg, 0);
 
-  if (!this->CheckWorkphaseChange(headerMsg))
+  // If there is any workphase change request,
+  // set NextWorkphase (done in the subroutine) and return 1.
+  if (this->CheckWorkphaseChange(headerMsg))
     {
-    this->NextWorkphase = this->Name(); // Set the name of the current workphase as the next one.
-    if (!this->CheckCommonMessage(headerMsg))
-      {
-      this->MessageHandler(headerMsg);
-      }
+    return 1;
     }
 
-  return this->NextWorkphase.c_str();
+  // Otherwise, the current workphase is the next workphase.
+  this->NextWorkphase = this->Name(); // Set the name of the current workphase as the next one.
+  if (!this->CheckCommonMessage(headerMsg))
+    {
+    this->MessageHandler(headerMsg);
+    }
+
+  return 0;
+
 }
 
 
@@ -79,6 +85,10 @@ int RobotSimulatorPhaseBase::CheckWorkphaseChange(igtl::MessageHeader* headerMsg
       if (stringMsg->GetEncoding() == 3)
         {
         this->NextWorkphase = stringMsg->GetString();
+        // Get the query ID
+        std::string msgName = headerMsg->GetDeviceName();
+        this->QueryID = msgName.substr(4, std::string::npos);
+
         return 1;
         }
       else

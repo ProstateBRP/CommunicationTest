@@ -32,14 +32,22 @@ public:
 
   virtual const char* Name() { return "NONE"; };
 
+  // Enter() will be called when the workphase is switched from another
+  // workphase
+  virtual int Enter(const char* queryID) = 0;
+
   // Process() will be called by the main session loop.
   // It checks if any work phase change request is recevied first. If not it calles
   // MessageHander() to perform workphase-specific message handling. 
-  virtual const char* Process();
+  // Returns 1 if there is any workphase change request. Otherwise returns 0.
+  virtual int Process();
 
   // MessageHandler() defines workphase-specific message handling.
   // The function needs to be implemented in child classes.
   virtual int MessageHandler(igtl::MessageHeader* headerMsg) = 0; // Message handler
+
+  std::string GetNextWorkPhase() { return this->NextWorkphase; };
+  std::string GetQueryID() { return this->QueryID; };
 
 protected:
 
@@ -53,6 +61,7 @@ protected:
 
   igtl::Socket::Pointer Socket;
   std::string NextWorkphase;
+  std::string QueryID;
 };
 
 #endif //__RobotSimulatorPhaseBase_h
