@@ -77,14 +77,14 @@ int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
 
   if (strcmp(headerMsg->GetDeviceType(), "STRING") != 0)
     {
-    std::cerr << "ERROR: Wrong message type." << std::endl;
+    std::cerr << "ERROR: Wrong message type: " << headerMsg->GetDeviceType() << std::endl;
     success = 0;
     }
   else if (suffix ?
            strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
            strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
-    std::cerr << "ERROR: Wrong message name." << std::endl;
+    std::cerr << "ERROR: Wrong message name: " << headerMsg->GetDeviceName() << std::endl;
     success = 0;
     }
   else
@@ -142,14 +142,14 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
   
   if (strcmp(headerMsg->GetDeviceType(), "STATUS") != 0)
     {
-    std::cerr << "ERROR: Wrong message type." << std::endl;
+    std::cerr << "ERROR: Wrong message type: " << headerMsg->GetDeviceType() << std::endl;
     success = 0;
     }
   else if (suffix ?
            strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
            strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
-    std::cerr << "ERROR: Wrong message name." << std::endl;
+    std::cerr << "ERROR: Wrong message name: " << headerMsg->GetDeviceName() << std::endl;
     success = 0;
     }
   else
@@ -205,14 +205,14 @@ int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
 
   if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") != 0)
     {
-    std::cerr << "ERROR: Wrong message type." << std::endl;
+    std::cerr << "ERROR: Wrong message type: " << headerMsg->GetDeviceType() << std::endl;
     success = 0;
     }
   else if (suffix ?
            strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
            strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
-    std::cerr << "ERROR: Wrong message name." << std::endl;
+    std::cerr << "ERROR: Wrong message name: " << headerMsg->GetDeviceName() << std::endl;
     success = 0;
     }
   else
@@ -283,7 +283,7 @@ int TestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 int TestBase::SendStringMessage(const char* name, const char* string)
 {
 
-  std::cerr << "-- Seinding STRING( " << name << ", " << string << ")" << std::endl;
+  std::cerr << "-- Sending STRING( " << name << ", " << string << ")" << std::endl;
   igtl::StringMessage::Pointer stringMsg;
   stringMsg = igtl::StringMessage::New();
 
@@ -298,7 +298,7 @@ int TestBase::SendStringMessage(const char* name, const char* string)
   int r = this->Socket->Send(stringMsg->GetPackPointer(), stringMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Seinding STRING( " << name << ", " << string << ")" << std::endl;
+    std::cerr << "ERROR: Sending STRING( " << name << ", " << string << ")" << std::endl;
     exit(0);
     }
   return 1;
@@ -307,7 +307,7 @@ int TestBase::SendStringMessage(const char* name, const char* string)
 
 int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 {
-  std::cerr << "-- Seinding TRANSFORM( " << name << ")" << std::endl;
+  std::cerr << "-- Sending TRANSFORM( " << name << ")" << std::endl;
 
   igtl::TransformMessage::Pointer transMsg;
   transMsg = igtl::TransformMessage::New();
@@ -324,7 +324,7 @@ int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
   int r = this->Socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Seinding TRANSFORM( " << name << ")" << std::endl;
+    std::cerr << "ERROR: Sending TRANSFORM( " << name << ")" << std::endl;
     exit(0);
     }
 
@@ -337,7 +337,7 @@ int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
 {
   igtl::StatusMessage::Pointer statusMsg;
   statusMsg = igtl::StatusMessage::New();
-  statusMsg->SetDeviceName("Device");
+  statusMsg->SetDeviceName(name);
 
   statusMsg->SetCode(Code);
   statusMsg->SetSubCode(SubCode);
@@ -347,7 +347,7 @@ int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
   int r = this->Socket->Send(statusMsg->GetPackPointer(), statusMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Seinding STATUS( " << name << ")" << std::endl;
+    std::cerr << "ERROR: Sending STATUS( " << name << ")" << std::endl;
     exit(0);
     }
 

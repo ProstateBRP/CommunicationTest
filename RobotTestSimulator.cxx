@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
     
     if (socket.IsNotNull()) // if client connected
       {
+      std::cerr << "Client connected. Starting a session..." << std::endl;
       Session(socket);
       }
     }
@@ -101,6 +102,7 @@ int Session(igtl::Socket * socket)
   std::vector< RobotSimulatorPhaseBase* >::iterator iter;
   for (iter = workphase.begin(); iter != workphase.end(); iter ++)
     {
+    std::cerr << "Setting up " << (*iter)->Name() << " phase." << std::endl;
     (*iter)->SetSocket(socket);
     }
 

@@ -42,7 +42,6 @@ public:
 
 protected:
 
-  igtl::Socket::Pointer Socket;
 };
 
 #endif //__NavigationTestBase_h

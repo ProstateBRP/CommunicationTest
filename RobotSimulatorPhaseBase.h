@@ -30,7 +30,7 @@ public:
   RobotSimulatorPhaseBase();
   ~RobotSimulatorPhaseBase();
 
-  virtual const char* Name() { return "NONE"; };
+  virtual const char* Name()=0;
 
   // Enter() will be called when the workphase is switched from another
   // workphase. Enter() calls Initialize() which implements actual
@@ -63,7 +63,6 @@ protected:
   // regardless of current workhpase.
   int CheckCommonMessage(igtl::MessageHeader* headerMsg);
 
-  igtl::Socket::Pointer Socket;
   std::string NextWorkphase;
   std::string QueryID;
 };

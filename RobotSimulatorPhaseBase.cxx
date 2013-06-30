@@ -41,7 +41,7 @@ int RobotSimulatorPhaseBase::Enter(const char* queryID)
 {
   // Send acknowledgement message with query ID
   std::stringstream ss;
-  ss << "ACK_" << queryID << std::endl;
+  ss << "ACK_" << queryID;
   this->SendStringMessage(ss.str().c_str(), this->Name());
   return this->Initialize();
 }
