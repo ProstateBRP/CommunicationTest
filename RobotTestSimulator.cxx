@@ -37,6 +37,7 @@ int ReceivePosition(igtl::Socket * socket, igtl::MessageHeader * header);
 int ReceiveStatus(igtl::Socket * socket, igtl::MessageHeader * header);
 int ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header);
 
+int Session(igtl::Socket * socket);
 int main(int argc, char* argv[])
 {
   //------------------------------------------------------------
@@ -84,47 +85,46 @@ int main(int argc, char* argv[])
 }
 
 
-int Session(igtl::Socekt * socket)
+int Session(igtl::Socket * socket)
 {
 
   //------------------------------------------------------------
   // loop
   for (;;)
     {
-    // Check data type and receive data body
-    if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
-      {
-      std::string str;
-      ReceiveString(socket, headerMsg, str);
-      }
-    if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
-      {
-      ReceiveTransform(socket, headerMsg);
-      }
-    else if (strcmp(headerMsg->GetDeviceType(), "STATUS") == 0)
-      {
-      ReceiveStatus(socket, headerMsg);
-      }
-    else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
-      {
-      ReceiveString(socket, headerMsg);
-      }
-    else
-      {
-      // if the data type is unknown, skip reading.
-      std::cerr << "Receiving : " << headerMsg->GetDeviceType() << std::endl;
-      std::cerr << "Size : " << headerMsg->GetBodySizeToRead() << std::endl;
-      socket->Skip(headerMsg->GetBodySizeToRead(), 0);
-      }
+    //// Check data type and receive data body
+    //if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
+    //  {
+    //  std::string str;
+    //  ReceiveString(socket, headerMsg, str);
+    //  }
+    //if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
+    //  {
+    //  ReceiveTransform(socket, headerMsg);
+    //  }
+    //else if (strcmp(headerMsg->GetDeviceType(), "STATUS") == 0)
+    //  {
+    //  ReceiveStatus(socket, headerMsg);
+    //  }
+    //else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
+    //  {
+    //  ReceiveString(socket, headerMsg);
+    //  }
+    //else
+    //  {
+    //  // if the data type is unknown, skip reading.
+    //  std::cerr << "Receiving : " << headerMsg->GetDeviceType() << std::endl;
+    //  std::cerr << "Size : " << headerMsg->GetBodySizeToRead() << std::endl;
+    //  socket->Skip(headerMsg->GetBodySizeToRead(), 0);
+    //  }
     }
+  return 1;
 }
 
 
 const char* CheckPhaseTransition(igtl::Socket * socket, igtl::MessageHeader * header)
 {
-  
-    {
-    
+  return NULL;
 }
 
 int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader * header)

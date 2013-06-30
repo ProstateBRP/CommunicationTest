@@ -28,6 +28,7 @@
 
 RobotSimulatorPhaseBase::RobotSimulatorPhaseBase()
 {
+  this->NextWorkphase.clear();
 }
 
 
@@ -41,45 +42,82 @@ const char* RobotSimulatorPhaseBase::Process()
   igtl::MessageHeader::Pointer headerMsg;
   headerMsg = igtl::MessageHeader::New();
 
-  //------------------------------------------------------------
-  // Allocate a time stamp 
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  
-  // Initialize receive buffer
-  headerMsg->InitPack();
-  
-  // Receive generic header from the socket
-  int r = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
-  if (r == 0)
-    {
-    socket->CloseSocket();
-    }
-  if (r != headerMsg->GetPackSize())
-    {
-    return NULL;
-    }
-  
-  // Deserialize the header
-  headerMsg->Unpack();
-  
-  //// Get time stamp
-  //igtlUint32 sec;
-  //igtlUint32 nanosec;
-  
-  //headerMsg->GetTimeStamp(ts);
-  //ts->GetTimeStamp(&sec, &nanosec);
-  //
-  //std::cerr << "Time stamp: "
-  //          << sec << "." << std::setw(9) << std::setfill('0') 
-  //          << nanosec << std::endl;
-  
-  // Workphase change.
+  ReceiveMessageHeader(headerMsg, 0);
 
+  if (!this->CheckWorkphaseChange(headerMsg))
+    {
+    this->NextWorkphase = this->Name(); // Set the name of the current workphase as the next one.
+    if (!this->CheckCommonMessage(headerMsg))
+      {
+      this->MessageHandler(headerMsg);
+      }
+    }
+
+  return this->NextWorkphase.c_str();
 }
 
-int RobotSimulatorPhaseBase::MessageHandler(igtl::MessageHeader* headerMsg)
+
+int RobotSimulatorPhaseBase::CheckWorkphaseChange(igtl::MessageHeader* headerMsg)
 {
+
+  // Check if the message requests phase transition
+  if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0 &&
+      strncmp(headerMsg->GetDeviceName(), "CMD_", 4) == 0)
+    {
+    igtl::StringMessage::Pointer stringMsg;
+    stringMsg = igtl::StringMessage::New();
+    stringMsg->SetMessageHeader(headerMsg);
+    stringMsg->AllocatePack();
+    this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+    
+    // Deserialize the string message
+    // If you want to skip CRC check, call Unpack() without argument.
+    int c = stringMsg->Unpack(1);
+    
+    if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+      {
+      if (stringMsg->GetEncoding() == 3)
+        {
+        this->NextWorkphase = stringMsg->GetString();
+        return 1;
+        }
+      else
+        {
+        this->NextWorkphase = "Unknown";
+        return 1;
+        }
+      }
+    else
+      {
+      std::cerr << "ERROR: Invalid CRC." << std::endl;
+      this->NextWorkphase = "Unknown";
+      return 1;
+      }
+    }
+  else
+    {
+    return 0;
+    }
+}
+
+
+int RobotSimulatorPhaseBase::CheckCommonMessage(igtl::MessageHeader* headerMsg)
+{
+  /// Check if GET_TRANSFORM has been received
+  if (strcmp(headerMsg->GetDeviceType(), "GET_TRANSFORM") == 0 &&
+      strncmp(headerMsg->GetDeviceName(), "CURRENT_POSITION", 4) == 0)
+    {
+    return 1;
+    }
+  /// Check if GET_STATUS has been received
+  else if (strcmp(headerMsg->GetDeviceType(), "GET_STATUS") == 0 &&
+           strncmp(headerMsg->GetDeviceName(), "CURRENT_STATUS", 4) == 0)
+    {
+    this->SendStatusMessage(this->Name(), 1, 0);
+    return 1;
+    }
+
+  return 0;
 }
 
 

@@ -19,10 +19,13 @@ set(NAVIGATION_SIM_SOURCE
 )
 
 set(ROBOT_SIM_SOURCE
+  RobotSimulatorPhaseBase.cxx
+  RobotTestSimulator.cxx
+  TestBase.cxx
 )
 
-#ADD_EXECUTABLE(RobotTestSimulator  ${ROBOT_SIM_SOURCE)
-#TARGET_LINK_LIBRARIES(RobotTestSimulator OpenIGTLink)
+ADD_EXECUTABLE(RobotTestSimulator  ${ROBOT_SIM_SOURCE})
+TARGET_LINK_LIBRARIES(RobotTestSimulator OpenIGTLink)
 
 ADD_EXECUTABLE(NavigationTestSimulator ${NAVIGATION_SIM_SOURCE})
 TARGET_LINK_LIBRARIES(NavigationTestSimulator OpenIGTLink)

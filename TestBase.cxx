@@ -70,7 +70,7 @@ int TestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout)
 
 
 int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
-                                                 const char* name, const char* string)
+                                           const char* name, const char* string, int suffix)
 {
 
   int success = 0;
@@ -80,7 +80,9 @@ int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
     std::cerr << "ERROR: Wrong message type." << std::endl;
     success = 0;
     }
-  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
+  else if (suffix ?
+           strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
+           strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
     std::cerr << "ERROR: Wrong message name." << std::endl;
     success = 0;
@@ -133,7 +135,7 @@ int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
 
 
 int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
-                                                 const char* name, int code)
+                                           const char* name, int code, int suffix)
 {
   
   int success = 0;
@@ -143,7 +145,9 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
     std::cerr << "ERROR: Wrong message type." << std::endl;
     success = 0;
     }
-  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
+  else if (suffix ?
+           strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
+           strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
     std::cerr << "ERROR: Wrong message name." << std::endl;
     success = 0;
@@ -194,7 +198,8 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
 
 // if err < 0, not check the matrix
 int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
-                                    const char* name, igtl::Matrix4x4& matrix, double err)
+                                              const char* name, igtl::Matrix4x4& matrix, double err, 
+                                              int suffix)
 {
   int success = 0;
 
@@ -203,7 +208,9 @@ int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
     std::cerr << "ERROR: Wrong message type." << std::endl;
     success = 0;
     }
-  else if (strcmp(headerMsg->GetDeviceName(), name) != 0)
+  else if (suffix ?
+           strncmp(name, headerMsg->GetDeviceName(), strlen(name)) != 0 :
+           strcmp(name, headerMsg->GetDeviceName()) != 0)
     {
     std::cerr << "ERROR: Wrong message name." << std::endl;
     success = 0;
@@ -323,6 +330,28 @@ int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 
   return 1;
 
+}
+
+
+int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
+{
+  igtl::StatusMessage::Pointer statusMsg;
+  statusMsg = igtl::StatusMessage::New();
+  statusMsg->SetDeviceName("Device");
+
+  statusMsg->SetCode(Code);
+  statusMsg->SetSubCode(SubCode);
+  statusMsg->SetErrorName("");
+  statusMsg->SetStatusString("");
+  statusMsg->Pack();
+  int r = this->Socket->Send(statusMsg->GetPackPointer(), statusMsg->GetPackSize());
+  if (!r)
+    {
+    std::cerr << "ERROR: Seinding STATUS( " << name << ")" << std::endl;
+    exit(0);
+    }
+
+  return 1;
 }
 
 
