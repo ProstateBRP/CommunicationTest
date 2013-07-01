@@ -13,12 +13,12 @@ Overview
 
 The testing software consists of two console programs:
 
-# NavigationTestSimulator
+### NavigationTestSimulator
 NavigationTestSimulator simulates the behaviour of navigation software e.g. 3D Slicer
 to test the robot control software. Once it starts, it starts sending a series of messages defined in
 [the testing protocol](http://wiki.na-mic.org/Wiki/index.php/ProstateBRP_OpenIGTLink_Communication_June_2013).
 
-# RobotTestSimulator
+### RobotTestSimulator
 RobotTestSimulator simulates the behaviour of robot control software. It responses to 
 message sent from navigation software, and is usesful to test navigation software.
 
