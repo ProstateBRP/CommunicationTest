@@ -15,9 +15,11 @@
 
 =========================================================================*/
 
-#include "RobotSimulatorPlanningPhase.h"
+#include "RobotSimulatorCalibrationPhase.h"
 #include <string.h>
 #include <stdlib.h>
+#include <string>
+#include <sstream>
 
 #include "igtlOSUtil.h"
 #include "igtlStringMessage.h"
@@ -26,30 +28,52 @@
 #include "igtlTransformMessage.h"
 #include <cmath>
 
-RobotSimulatorPlanningPhase::RobotSimulatorPlanningPhase() :
+RobotSimulatorCalibrationPhase::RobotSimulatorCalibrationPhase() :
   RobotSimulatorPhaseBase()
 {
 }
 
 
-RobotSimulatorPlanningPhase::~RobotSimulatorPlanningPhase()
+RobotSimulatorCalibrationPhase::~RobotSimulatorCalibrationPhase()
 {
 }
 
-int RobotSimulatorPlanningPhase::Initialize()
+int RobotSimulatorCalibrationPhase::Initialize()
 {
   return 1;
 }
 
 
-int RobotSimulatorPlanningPhase::MessageHandler(igtl::MessageHeader* headerMsg)
+int RobotSimulatorCalibrationPhase::MessageHandler(igtl::MessageHeader* headerMsg)
 {
 
   if (RobotSimulatorPhaseBase::MessageHandler(headerMsg))
     {
     return 1;
     }
+  
+  /// Check if GET_TRANSFORM has been received
+  if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0 &&
+      strncmp(headerMsg->GetDeviceName(), "CLB_", 4) == 0)
+    {
+    igtl::Matrix4x4 matrix;
+    this->ReceiveTransform(headerMsg, matrix);
+    
+    std::string devName = headerMsg->GetDeviceName();
+    std::stringstream ss;
+    ss << "ACK_" << devName.substr(4, std::string::npos);
+
+    SendTransformMessage(ss.str().c_str(), matrix);
+  
+    //Mimic calibration process
+    igtl::Sleep(1000);
+    
+    SendStatusMessage("CALIBRATION", igtl::StatusMessage::STATUS_OK, 0);
+
+    return 1;
+    }
 
   return 0;
 }
+
 

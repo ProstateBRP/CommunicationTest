@@ -15,9 +15,11 @@
 
 =========================================================================*/
 
-#include "RobotSimulatorStartUpPhase.h"
+#include "RobotSimulatorTargetingPhase.h"
 #include <string.h>
 #include <stdlib.h>
+#include <string>
+#include <sstream>
 
 #include "igtlOSUtil.h"
 #include "igtlStringMessage.h"
@@ -26,35 +28,61 @@
 #include "igtlTransformMessage.h"
 #include <cmath>
 
-RobotSimulatorStartUpPhase::RobotSimulatorStartUpPhase() :
+RobotSimulatorTargetingPhase::RobotSimulatorTargetingPhase() :
   RobotSimulatorPhaseBase()
 {
 }
 
 
-RobotSimulatorStartUpPhase::~RobotSimulatorStartUpPhase()
+RobotSimulatorTargetingPhase::~RobotSimulatorTargetingPhase()
 {
 }
 
-int RobotSimulatorStartUpPhase::Initialize()
+int RobotSimulatorTargetingPhase::Initialize()
 {
-
+  
   // Send Status after waiting for 2 seconds (mimicking initialization process)
-  igtl::Sleep(2000); // wait for 2000 msec
+  igtl::Sleep(1000); // wait for 1000 msec
   this->SendStatusMessage(this->Name(), 1, 0);
-
+  
   return 1;
+
 }
 
 
-int RobotSimulatorStartUpPhase::MessageHandler(igtl::MessageHeader* headerMsg)
+int RobotSimulatorTargetingPhase::MessageHandler(igtl::MessageHeader* headerMsg)
 {
 
   if (RobotSimulatorPhaseBase::MessageHandler(headerMsg))
     {
     return 1;
     }
+  
+  /// Check if GET_TRANSFORM has been received
+  if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0 &&
+      strncmp(headerMsg->GetDeviceName(), "TGT_", 4) == 0)
+    {
+    igtl::Matrix4x4 matrix;
+    this->ReceiveTransform(headerMsg, matrix);
+    
+    std::string devName = headerMsg->GetDeviceName();
+    std::stringstream ss;
+    ss << "ACK_" << devName.substr(4, std::string::npos);
+
+    SendTransformMessage(ss.str().c_str(), matrix);
+  
+    //Mimic target checking process
+    igtl::Sleep(1000);
+    
+    SendStatusMessage("TARGET", igtl::StatusMessage::STATUS_OK, 0);
+    SendTransformMessage("TARGET", matrix);
+
+    return 1;
+    }
+  
+  
 
   return 0;
 }
+
 

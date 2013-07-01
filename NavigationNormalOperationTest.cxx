@@ -88,7 +88,7 @@ int NavigationNormalOperationTest::Test()
   for (;;) // Can receive more than 1 transform message
     {
     ReceiveMessageHeader(headerMsg, 10000);
-    if (strcmp(headerMsg->GetDeviceName(), "TRANSFORM") == 0)
+    if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
       {
       if (!CheckAndReceiveTransformMessage(headerMsg, "CURRENT_POSITION", matrix, -1))
         {
@@ -99,9 +99,13 @@ int NavigationNormalOperationTest::Test()
         fCurrentPositionReceived = 1;
         }
       }
+    else
+      {
+      break;
+      }
     }
   
-  ReceiveMessageHeader(headerMsg, 1000); // TODO: timeout is not valid
+  //ReceiveMessageHeader(headerMsg, 1000); // TODO: timeout is not valid
   if (!CheckAndReceiveStatusMessage(headerMsg, "MOVE_TO_TARGET", 1)) return ERROR;
 
   ReceiveMessageHeader(headerMsg, 100);

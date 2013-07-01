@@ -125,7 +125,7 @@ int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
   
   if (!success)
     {
-    std::cerr << "ERROR: Could not receive STRING(" << name << ", " << string << ") message." << std::endl;
+    std::cerr << "ERROR: Could not receive STRING( " << name << ", " << string << " ) message." << std::endl;
     this->Socket->CloseSocket();
     }
 
@@ -188,7 +188,7 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
 
   if (!success)
     {
-    std::cerr << "ERROR: Could not receive STATUS(" << name << ", " << code << ") message." << std::endl;
+    std::cerr << "ERROR: Could not receive STATUS( " << name << ", " << code << " ) message." << std::endl;
     this->Socket->CloseSocket();
     }
 
@@ -238,22 +238,26 @@ int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
         {
         success = 1;
         }
-      for (int i = 0; i < 4; i ++)
+      else
         {
-        for (int j = 0; j < 4; j ++)
+        success = 1;
+        for (int i = 0; i < 4; i ++)
           {
-          if (fabs(rmatrix[i][j] - rmatrix[i][j]) <= err)
+          for (int j = 0; j < 4; j ++)
             {
-            std::cerr << "ERROR: Matrix does not match." << std::endl;
-            std::cerr << "==== Expected Matrix ====" << std::endl;
-            igtl::PrintMatrix(matrix);
-            std::cerr << "==== Received Matrix ====" << std::endl;
-            igtl::PrintMatrix(rmatrix);
-            success = 0;
+            if (fabs(rmatrix[i][j] - rmatrix[i][j]) > err)
+              {
+              std::cerr << "ERROR: Matrix does not match." << std::endl;
+              std::cerr << "==== Expected Matrix ====" << std::endl;
+              igtl::PrintMatrix(matrix);
+              std::cerr << "==== Received Matrix ====" << std::endl;
+              igtl::PrintMatrix(rmatrix);
+              success = 0;
+              i = j = 3;
+              }
             }
           }
         }
-      success = 1;
       }
     else
       {
@@ -264,7 +268,7 @@ int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
 
   if (!success)
     {
-    std::cerr << "ERROR: Could not receive TRANSFORM(" << name << ") message" << std::endl;
+    std::cerr << "ERROR: Could not receive TRANSFORM( " << name << " ) message" << std::endl;
     this->Socket->CloseSocket();
     }
 
@@ -283,7 +287,7 @@ int TestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 int TestBase::SendStringMessage(const char* name, const char* string)
 {
 
-  std::cerr << "-- Sending STRING( " << name << ", " << string << ")" << std::endl;
+  std::cerr << "-- Sending STRING( " << name << ", " << string << " )" << std::endl;
   igtl::StringMessage::Pointer stringMsg;
   stringMsg = igtl::StringMessage::New();
 
@@ -298,7 +302,7 @@ int TestBase::SendStringMessage(const char* name, const char* string)
   int r = this->Socket->Send(stringMsg->GetPackPointer(), stringMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Sending STRING( " << name << ", " << string << ")" << std::endl;
+    std::cerr << "ERROR: Sending STRING( " << name << ", " << string << " )" << std::endl;
     exit(0);
     }
   return 1;
@@ -307,7 +311,7 @@ int TestBase::SendStringMessage(const char* name, const char* string)
 
 int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 {
-  std::cerr << "-- Sending TRANSFORM( " << name << ")" << std::endl;
+  std::cerr << "-- Sending TRANSFORM( " << name << " )" << std::endl;
 
   igtl::TransformMessage::Pointer transMsg;
   transMsg = igtl::TransformMessage::New();
@@ -324,7 +328,7 @@ int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
   int r = this->Socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Sending TRANSFORM( " << name << ")" << std::endl;
+    std::cerr << "ERROR: Sending TRANSFORM( " << name << " )" << std::endl;
     exit(0);
     }
 
@@ -347,7 +351,7 @@ int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
   int r = this->Socket->Send(statusMsg->GetPackPointer(), statusMsg->GetPackSize());
   if (!r)
     {
-    std::cerr << "ERROR: Sending STATUS( " << name << ")" << std::endl;
+    std::cerr << "ERROR: Sending STATUS( " << name << " )" << std::endl;
     exit(0);
     }
 
@@ -387,3 +391,98 @@ void TestBase::GetRandomTestMatrix(igtl::Matrix4x4& matrix)
 
 
 
+int TestBase::ReceiveTransform(igtl::MessageHeader* header, igtl::Matrix4x4& matrix)
+{
+  std::cerr << "Receiving TRANSFORM data type." << std::endl;
+  
+  // Create a message buffer to receive transform data
+  igtl::TransformMessage::Pointer transMsg;
+  transMsg = igtl::TransformMessage::New();
+  transMsg->SetMessageHeader(header);
+  transMsg->AllocatePack();
+  
+  // Receive transform data from the this->Socket
+  this->Socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
+  
+  // Deserialize the transform data
+  // If you want to skip CRC check, call Unpack() without argument.
+  int c = transMsg->Unpack(1);
+  
+  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+    {
+    // Retrive the transform data
+    transMsg->GetMatrix(matrix);
+    igtl::PrintMatrix(matrix);
+    std::cerr << std::endl;
+    return 1;
+    }
+
+  return 0;
+}
+
+int TestBase::ReceiveString(igtl::MessageHeader* header, std::string& string)
+{
+
+  std::cerr << "Receiving STRING data type." << std::endl;
+
+  // Create a message buffer to receive transform data
+  igtl::StringMessage::Pointer stringMsg;
+  stringMsg = igtl::StringMessage::New();
+  stringMsg->SetMessageHeader(header);
+  stringMsg->AllocatePack();
+
+  // Receive transform data from the this->Socket
+  this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+
+  // Deserialize the transform data
+  // If you want to skip CRC check, call Unpack() without argument.
+  int c = stringMsg->Unpack(1);
+
+  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+    {
+    std::cerr << "Encoding: " << stringMsg->GetEncoding() << "; "
+              << "String: " << stringMsg->GetString() << std::endl << std::endl;
+    string = stringMsg->GetString();
+    }
+
+  return 1;
+}
+
+
+int TestBase::ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode,
+                  std::string& name, std::string& status)
+{
+
+  std::cerr << "Receiving STATUS data type." << std::endl;
+
+  // Create a message buffer to receive transform data
+  igtl::StatusMessage::Pointer statusMsg;
+  statusMsg = igtl::StatusMessage::New();
+  statusMsg->SetMessageHeader(header);
+  statusMsg->AllocatePack();
+  
+  // Receive transform data from the this->Socket
+  this->Socket->Receive(statusMsg->GetPackBodyPointer(), statusMsg->GetPackBodySize());
+  
+  // Deserialize the transform data
+  // If you want to skip CRC check, call Unpack() without argument.
+  int c = statusMsg->Unpack(1);
+  
+  if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+    {
+    std::cerr << "========== STATUS ==========" << std::endl;
+    std::cerr << " Code      : " << statusMsg->GetCode() << std::endl;
+    std::cerr << " SubCode   : " << statusMsg->GetSubCode() << std::endl;
+    std::cerr << " Error Name: " << statusMsg->GetErrorName() << std::endl;
+    std::cerr << " Status    : " << statusMsg->GetStatusString() << std::endl;
+    std::cerr << "============================" << std::endl << std::endl;
+
+    code = statusMsg->GetCode();
+    subcode = statusMsg->GetSubCode();
+    name = statusMsg->GetErrorName();
+    status = statusMsg->GetStatusString();
+    }
+
+  return 0;
+
+}

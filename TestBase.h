@@ -51,12 +51,16 @@ public:
   /// specfiied. 
   int  CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
                                     const char* name, const char* string, int suffix=0);
-
   int  CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
                                     const char* name, int code, int suffix=0);
   int  CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
                                        const char* name, igtl::Matrix4x4& matrix,
                                        double err = 1.0e-10, int suffix=0);
+
+  int ReceiveTransform(igtl::MessageHeader* header, igtl::Matrix4x4& matrix);
+  int ReceiveString(igtl::MessageHeader* header, std::string& string);
+  int ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode,
+                    std::string& name, std::string& status);
 
 protected:
 
