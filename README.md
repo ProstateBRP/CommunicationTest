@@ -25,8 +25,8 @@ message sent from navigation software, and is usesful to test navigation softwar
 Tutorial
 --------
 
-Although NavigationTestSimulator and RobotTestSimulator are designed to communicate with actual robot control software
-and navigation software respectively for the testing, they can be used together. The following tutorial demonstrate
+Although NavigationTestSimulator and RobotTestSimulator are designed to be used with actual robot control software
+and navigation software respectively, they can be used together. The following tutorial demonstrate
 how to run those programs. We assume that those programs are running on the same machine and use port 18944.
 
 First, open a terminal, go to the directory that contains the simulator programs, and start the RobotTestSimulator:
