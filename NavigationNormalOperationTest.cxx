@@ -113,9 +113,9 @@ int NavigationNormalOperationTest::Test()
   
   SendStringMessage("CMD_0008", "MANUAL");
   ReceiveMessageHeader(headerMsg, 100);
-  if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0004", "MANUAL")) return ERROR;
+  if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0008", "MANUAL")) return ERROR;
 
-  ReceiveMessageHeader(headerMsg, 1000); // TODO: timeout is not valid
+  ReceiveMessageHeader(headerMsg, 10000); // TODO: timeout is not valid
   if (!CheckAndReceiveStatusMessage(headerMsg, "MANUAL", 1)) return ERROR;
 
   //send GET_TRANSFORM(CURRENT_POSITION)
@@ -127,16 +127,16 @@ int NavigationNormalOperationTest::Test()
 
   SendStringMessage("CMD_0009", "STOP");
   ReceiveMessageHeader(headerMsg, 100);
-  if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0004", "STOP")) return ERROR;
+  if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0009", "STOP")) return ERROR;
 
-  ReceiveMessageHeader(headerMsg, 1000); // TODO: timeout is not valid
+  ReceiveMessageHeader(headerMsg, 10000); // TODO: timeout is not valid
   if (!CheckAndReceiveStatusMessage(headerMsg, "STOP", 1)) return ERROR;
 
   SendStringMessage("CMD_0010", "EMERGENCY");
   ReceiveMessageHeader(headerMsg, 100);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0010", "EMERGENCY")) return ERROR;
 
-  ReceiveMessageHeader(headerMsg, 1000); // TODO: timeout is not valid
+  ReceiveMessageHeader(headerMsg, 10000); // TODO: timeout is not valid
   if (!CheckAndReceiveStatusMessage(headerMsg, "EMERGENCY", 1)) return ERROR;
   
   return 1;

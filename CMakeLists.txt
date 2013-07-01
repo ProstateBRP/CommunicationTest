@@ -26,6 +26,9 @@ set(ROBOT_SIM_SOURCE
   RobotSimulatorCalibrationPhase.cxx
   RobotSimulatorTargetingPhase.cxx
   RobotSimulatorMoveToTargetPhase.cxx
+  RobotSimulatorManualPhase.cxx
+  RobotSimulatorStopPhase.cxx
+  RobotSimulatorEmergencyPhase.cxx
   RobotTestSimulator.cxx
   TestBase.cxx
 )

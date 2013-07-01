@@ -41,6 +41,9 @@
 #include "RobotSimulatorCalibrationPhase.h"
 #include "RobotSimulatorTargetingPhase.h"
 #include "RobotSimulatorMoveToTargetPhase.h"
+#include "RobotSimulatorManualPhase.h"
+#include "RobotSimulatorStopPhase.h"
+#include "RobotSimulatorEmergencyPhase.h"
 
 int Session(igtl::Socket * socket);
 
@@ -102,6 +105,9 @@ int Session(igtl::Socket * socket)
   workphase.push_back(new RobotSimulatorCalibrationPhase);
   workphase.push_back(new RobotSimulatorTargetingPhase);
   workphase.push_back(new RobotSimulatorMoveToTargetPhase);
+  workphase.push_back(new RobotSimulatorManualPhase);
+  workphase.push_back(new RobotSimulatorStopPhase);
+  workphase.push_back(new RobotSimulatorEmergencyPhase);
 
   //------------------------------------------------------------
   // Set socket.
