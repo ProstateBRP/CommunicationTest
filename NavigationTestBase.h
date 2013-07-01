@@ -26,9 +26,17 @@
 class NavigationTestBase : public TestBase
 {
 public:
+
+  // This type is used to return the check point in the test. The upper 16 bits
+  // represents the step ID, while the lower 16 bits represents the point ID.
+  // 0xFFFFFFFE and 0xFFFFFFFF are reserved for UNKOWN FAILURE and SUCCESS. 
+  // Error() function may be used to generate ErrorPointType value.
+  // To decode ErrorPointType values, use GetStep() and GetPoint().
+  typedef unsigned int ErrorPointType;
+
   enum {
-    ERROR = 0,
-    SUCCESS = 1,
+    UNKNOWN_FAILURE = 0xFFFFFFFE,
+    SUCCESS = 0xFFFFFFFF,
   };
 
 public:
@@ -38,7 +46,32 @@ public:
   virtual const char* Name()=0;
 
   virtual int Exec();
-  virtual int Test() = 0;  // Testing protocol implementation. This must be implemented in a child class.
+
+  inline ErrorPointType Error(unsigned short step, unsigned short point)
+  {
+    ErrorPointType ret;
+    ret = step;
+    ret = (ret << 16) | point;
+    return ret;
+  }
+
+  inline unsigned short GetStep(ErrorPointType error)
+  {
+    unsigned short ret;
+    ret = error >> 16 & 0xFFFF;
+    return ret;
+  }
+
+  inline unsigned short GetPoint(ErrorPointType error)
+  {
+    unsigned short ret;
+    ret = 16 & 0xFFFF;
+    return ret;
+  }
+
+  // Testing protocol implementation. This must be implemented in a child class.
+  // Test() returns ErrorPoint data. 
+  virtual ErrorPointType Test() = 0;
 
 protected:
 

@@ -29,7 +29,7 @@ public:
 
   virtual const char* Name() { return "Normal Operation Test"; };
 
-  virtual int Test();
+  virtual ErrorPointType Test();
 
 };
 

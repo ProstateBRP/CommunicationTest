@@ -40,7 +40,16 @@ int NavigationTestBase::Exec()
 {
   if (this->Socket.IsNotNull())
     {
-    return this->Test();
+    ErrorPointType errorPoint = this->Test();
+    if (errorPoint == SUCCESS)
+      {
+      std::cerr << "MESSAGE: The test has been completed successfully." << std::endl;
+      }
+    else
+      {
+      std::cerr << "ERROR: Test failed at check point #" << GetStep(errorPoint) << "." << GetPoint(errorPoint) << std::endl;
+      }
+
     }
   else
     {
