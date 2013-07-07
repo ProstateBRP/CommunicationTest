@@ -11,9 +11,8 @@ include(${OpenIGTLink_USE_FILE})
 
 set(NAVIGATION_SIM_SOURCE
   NavigationNormalOperationTest.cxx
-  NavigationNormalOperationTest.h
+  NavigationStartUpErrorTest.cxx
   NavigationTestBase.cxx
-  NavigationTestBase.h
   NavigationTestSimulator.cxx
   TestBase.cxx
 )

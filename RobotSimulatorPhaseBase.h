@@ -18,6 +18,9 @@
 #ifndef __RobotSimulatorPhaseBase_h
 #define __RobotSimulatorPhaseBase_h
 
+#include <string>
+#include <map>
+
 #include "igtlSocket.h"
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
@@ -53,6 +56,15 @@ public:
   std::string GetNextWorkPhase() { return this->NextWorkphase; };
   std::string GetQueryID() { return this->QueryID; };
 
+  // Enable/disable defects. Specify s=1 when enabled.
+  int SetDefectStatus(const char * type, int s);
+
+  // Return 0 if disabled, 1 if enabled, or -1 if the specified type is not available.
+  int GetDefectStatus(const char * type);
+
+  std::list< std::string > GetDefectTypeList();
+  std::string GetDefectTypeDescription(const char * type);
+
 protected:
 
   // Check if a CMD message (workphase change) has been received.
@@ -63,8 +75,14 @@ protected:
   // regardless of current workhpase.
   int CheckCommonMessage(igtl::MessageHeader* headerMsg);
 
+  // Register defect type. 
+  int RegisterDefectType(const char* name, const char* desc);
+
   std::string NextWorkphase;
   std::string QueryID;
+
+  std::map< std::string, int > DefectStatus;
+  std::map< std::string, std::string > DefectDescription;
 };
 
 #endif //__RobotSimulatorPhaseBase_h

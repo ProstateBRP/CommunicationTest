@@ -21,18 +21,8 @@
 
 #include "igtlClientSocket.h"
 #include "NavigationNormalOperationTest.h"
-/*
-int ExecNormalOperationTest(igtl::Socket* socket);
-int ExecStartUpErrorTest(igtl::Socket* socket);
-int ExecCalibrationErrorTest(igtl::Socket* socket);
-int ExecTargetingWithoutCalibrationTest(igtl::Socket* socket);
-int ExecOutOfRangeTest(igtl::Socket* socket);
-int ExecStopTest(igtl::Socket* socket);
-int ExecEmergencyTest(igtl::Socket* socket);
-int ExecMoveToWithoutTargetTest(igtl::Socket* socket);
-int ExecAccidentalMoveToTargetTest(igtl::Socket* socket);
-int ExecHardwareErrorTest(igtl::Socket* socket);
-*/
+#include "NavigationStartUpErrorTest.h"
+
 
 int main(int argc, char* argv[])
 {
@@ -74,17 +64,28 @@ int main(int argc, char* argv[])
 
   //------------------------------------------------------------
   // Call Test
+  NavigationTestBase* navTest = NULL;
+
   switch (test)
     {
     case 1:
       {
-      NavigationNormalOperationTest * cnotest = new NavigationNormalOperationTest();
-      cnotest->SetSocket(socket);
-      cnotest->Exec();
+      navTest = (NavigationNormalOperationTest*) new NavigationNormalOperationTest();
+      break;
+      }
+    case 2:
+      {
+      navTest = (NavigationStartUpErrorTest*) new NavigationStartUpErrorTest();
       break;
       }
     default:
       break;
+    }
+
+  if (navTest)
+    {
+    navTest->SetSocket(socket);
+    navTest->Exec();
     }
 
   //------------------------------------------------------------

@@ -159,3 +159,68 @@ int RobotSimulatorPhaseBase::CheckCommonMessage(igtl::MessageHeader* headerMsg)
 }
 
 
+
+int RobotSimulatorPhaseBase::SetDefectStatus(const char * type, int s)
+{
+  std::map< std::string, int >::iterator iter;
+  iter = this->DefectStatus.find(type);
+  if (iter != this->DefectStatus.end())
+    {
+    iter->second = ((s)?1:0);
+    return 1;
+    }
+  else
+    {
+    // The specified type is not available
+    return 0;
+    }
+}
+
+int RobotSimulatorPhaseBase::GetDefectStatus(const char * type)
+{
+  std::map< std::string, int >::iterator iter;
+  iter = this->DefectStatus.find(type);
+  if (iter != this->DefectStatus.end())
+    {
+    return iter->second;
+    }
+  else
+    {
+    return -1;
+    }
+}
+
+std::list< std::string > RobotSimulatorPhaseBase::GetDefectTypeList()
+{
+  std::list< std::string > list;
+  list.clear();
+  
+  std::map< std::string, int >::iterator iter;
+  for (iter = this->DefectStatus.begin(); iter != this->DefectStatus.end(); iter ++)
+    {
+    list.push_back(iter->first);
+    }
+
+  return list;
+}
+
+std::string RobotSimulatorPhaseBase::GetDefectTypeDescription(const char * type)
+{
+  std::map< std::string, std::string >::iterator iter;
+  iter = this->DefectDescription.find(type);
+  if (iter != this->DefectDescription.end())
+    {
+    return iter->second;
+    }
+  else
+    {
+    return std::string("");
+    }
+}
+
+int RobotSimulatorPhaseBase::RegisterDefectType(const char* name, const char* desc)
+{
+  this->DefectStatus[name] = 0; // set 0 status
+  this->DefectDescription[name] = desc;
+  return 1;
+}
