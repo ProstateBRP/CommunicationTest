@@ -254,10 +254,10 @@ int TestBase::CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
             if (fabs(rmatrix[i][j] - rmatrix[i][j]) > err)
               {
               std::cerr << "ERROR: Matrix does not match." << std::endl;
-              std::cerr << "==== Expected Matrix ====" << std::endl;
-              igtl::PrintMatrix(matrix);
-              std::cerr << "==== Received Matrix ====" << std::endl;
-              igtl::PrintMatrix(rmatrix);
+              std::cerr << "ERROR: Expected Matrix:" << std::endl;
+              PrintMatrix( "ERROR:  ", matrix);
+              std::cerr << "ERROR: Received Matrix:" << std::endl;
+              PrintMatrix( "ERROR:  ", rmatrix);
               success = 0;
               i = j = 3;
               }
@@ -345,6 +345,8 @@ int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 
 int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
 {
+  std::cerr << "MESSAGE: Sending STATUS( " << name << " )" << std::endl;
+
   igtl::StatusMessage::Pointer statusMsg;
   statusMsg = igtl::StatusMessage::New();
   statusMsg->SetDeviceName(name);
@@ -392,7 +394,7 @@ void TestBase::GetRandomTestMatrix(igtl::Matrix4x4& matrix)
   matrix[1][3] = position[1];
   matrix[2][3] = position[2];
   
-  igtl::PrintMatrix(matrix);
+  //PrintMatrix(matrix);
 }
 
 
@@ -418,7 +420,7 @@ int TestBase::ReceiveTransform(igtl::MessageHeader* header, igtl::Matrix4x4& mat
     {
     // Retrive the transform data
     transMsg->GetMatrix(matrix);
-    igtl::PrintMatrix(matrix);
+    //igtl::PrintMatrix(matrix);
     std::cerr << std::endl;
     return 1;
     }
@@ -491,4 +493,12 @@ int TestBase::ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode
 
   return 0;
 
+}
+
+int TestBase::PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix)
+{
+  std::cout << prefix << " [" << matrix[0][0] << ", " << matrix[0][1] << ", " << matrix[0][2] << ", " << matrix[0][3] << "]" << std::endl;
+  std::cout << prefix << " [" << matrix[1][0] << ", " << matrix[1][1] << ", " << matrix[1][2] << ", " << matrix[1][3] << "]" << std::endl;
+  std::cout << prefix << " [" << matrix[2][0] << ", " << matrix[2][1] << ", " << matrix[2][2] << ", " << matrix[2][3] << "]" << std::endl;
+  std::cout << prefix << " [" << matrix[3][0] << ", " << matrix[3][1] << ", " << matrix[3][2] << ", " << matrix[3][3] << "]" << std::endl;
 }
