@@ -67,8 +67,17 @@ int RobotSimulatorCalibrationPhase::MessageHandler(igtl::MessageHeader* headerMs
   
     //Mimic calibration process
     igtl::Sleep(1000);
-    
-    SendStatusMessage("CALIBRATION", igtl::StatusMessage::STATUS_OK, 0);
+
+    if (ValidateMatrix(matrix))
+      {
+      SendStatusMessage("CALIBRATION", igtl::StatusMessage::STATUS_OK, 0);
+      }
+    else
+      {
+      std::cerr << "ERROR: Invalid calibration matrix." << std::endl;
+      SendStatusMessage("CALIBRATION", igtl::StatusMessage::STATUS_CONFIG_ERROR, 0);
+      }
+        
 
     return 1;
     }

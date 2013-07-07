@@ -22,7 +22,7 @@
 #include "igtlClientSocket.h"
 #include "NavigationNormalOperationTest.h"
 #include "NavigationStartUpErrorTest.h"
-
+#include "NavigationCalibrationErrorTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -77,6 +77,10 @@ int main(int argc, char* argv[])
       {
       navTest = (NavigationStartUpErrorTest*) new NavigationStartUpErrorTest();
       break;
+      }
+    case 3:
+      {
+      navTest = (NavigationCalibrationErrorTest*) new NavigationCalibrationErrorTest();
       }
     default:
       break;

@@ -10,11 +10,12 @@ find_package(OpenIGTLink REQUIRED)
 include(${OpenIGTLink_USE_FILE})
 
 set(NAVIGATION_SIM_SOURCE
-  NavigationNormalOperationTest.cxx
-  NavigationStartUpErrorTest.cxx
+  TestBase.cxx
   NavigationTestBase.cxx
   NavigationTestSimulator.cxx
-  TestBase.cxx
+  NavigationNormalOperationTest.cxx
+  NavigationStartUpErrorTest.cxx
+  NavigationCalibrationErrorTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE

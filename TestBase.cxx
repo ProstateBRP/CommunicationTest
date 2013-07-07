@@ -502,3 +502,30 @@ void TestBase::PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix)
   std::cout << prefix << " [" << matrix[2][0] << ", " << matrix[2][1] << ", " << matrix[2][2] << ", " << matrix[2][3] << "]" << std::endl;
   std::cout << prefix << " [" << matrix[3][0] << ", " << matrix[3][1] << ", " << matrix[3][2] << ", " << matrix[3][3] << "]" << std::endl;
 }
+
+
+int TestBase::ValidateMatrix(igtl::Matrix4x4& matrix)
+{
+  // Check if each column is normal:
+  for (int i = 0; i < 3; i ++)
+    {
+    double l = matrix[0][i]*matrix[0][i] + matrix[1][i]*matrix[1][i] + matrix[2][i]*matrix[2][i];
+    if (abs(l - 1.0) > 0.00001)
+      {
+      return 0;
+      }
+    }
+
+  // Check if colums are orthogonal
+  float a[] = { matrix[0][0], matrix[1][0], matrix[2][0] };
+  float b[] = { matrix[0][1], matrix[1][1], matrix[2][1] };
+  float c[] = { matrix[0][2], matrix[1][2], matrix[2][2] };
+  float d[3];
+  igtl::Cross(d, a, b);
+  if (abs(c[0]-d[0]) > 0.00001 || abs(c[1]-d[1]) > 0.00001 || abs(c[2]-d[2]) > 0.00001)
+    {
+    return 0;
+    }
+
+  return 1;
+}

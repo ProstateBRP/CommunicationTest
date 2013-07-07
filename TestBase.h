@@ -63,6 +63,8 @@ public:
                     std::string& name, std::string& status);
 
   void PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix);
+  int ValidateMatrix(igtl::Matrix4x4& matrix);
+
 protected:
 
   igtl::Socket::Pointer Socket;
