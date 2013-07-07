@@ -55,13 +55,19 @@ int TestBase::ReceiveMessageHeader(igtl::MessageHeader* headerMsg, int timeout)
       {
       std::cerr << "ERROR: Timeout." << std::endl;
       this->Socket->CloseSocket();
-      exit(0);
+      exit(EXIT_FAILURE);
+      }
+    else if (r == 0)
+      {
+      std::cerr << "MESSAGE: Socket closed." << std::endl;
+      this->Socket->CloseSocket();
+      exit(EXIT_SUCCESS);
       }
     else
       {
       std::cerr << "ERROR: Receiving message." << std::endl;
       this->Socket->CloseSocket();
-      exit(0);
+      exit(EXIT_FAILURE);
       }
     }
   headerMsg->Unpack();
@@ -287,7 +293,7 @@ int TestBase::SkipMesage(igtl::MessageHeader* headerMsg)
 int TestBase::SendStringMessage(const char* name, const char* string)
 {
 
-  std::cerr << "-- Sending STRING( " << name << ", " << string << " )" << std::endl;
+  std::cerr << "MESSAGE: Sending STRING( " << name << ", " << string << " )" << std::endl;
   igtl::StringMessage::Pointer stringMsg;
   stringMsg = igtl::StringMessage::New();
 
@@ -311,7 +317,7 @@ int TestBase::SendStringMessage(const char* name, const char* string)
 
 int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 {
-  std::cerr << "-- Sending TRANSFORM( " << name << " )" << std::endl;
+  std::cerr << "MESSAGE: Sending TRANSFORM( " << name << " )" << std::endl;
 
   igtl::TransformMessage::Pointer transMsg;
   transMsg = igtl::TransformMessage::New();

@@ -90,7 +90,19 @@ int RobotSimulatorPhaseBase::CheckWorkphaseChange(igtl::MessageHeader* headerMsg
     stringMsg = igtl::StringMessage::New();
     stringMsg->SetMessageHeader(headerMsg);
     stringMsg->AllocatePack();
-    this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+    int r = this->Socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+    if (r < 0)
+      {
+      std::cerr << "ERROR: Timeout." << std::endl;
+      this->Socket->CloseSocket();
+      exit(EXIT_FAILURE);
+      }
+    else if (r == 0)
+      {
+      std::cerr << "ERROR: Socket closed while reading a message." << std::endl;
+      this->Socket->CloseSocket();
+      exit(EXIT_FAILURE);
+      }
     
     // Deserialize the string message
     // If you want to skip CRC check, call Unpack() without argument.
