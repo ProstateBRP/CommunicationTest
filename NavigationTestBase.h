@@ -65,7 +65,7 @@ public:
   inline unsigned short GetPoint(ErrorPointType error)
   {
     unsigned short ret;
-    ret = 16 & 0xFFFF;
+    ret = error & 0xFFFF;
     return ret;
   }
 

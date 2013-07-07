@@ -181,7 +181,7 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
         }
       else
         {
-        std::cerr << "ERROR: Invalid Code: " << code << std::endl;
+        std::cerr << "ERROR: Invalid Code: " << statusMsg->GetCode() << std::endl;
         success = 0;
         }
       }

@@ -16,6 +16,7 @@ set(NAVIGATION_SIM_SOURCE
   NavigationNormalOperationTest.cxx
   NavigationStartUpErrorTest.cxx
   NavigationCalibrationErrorTest.cxx
+  NavigationTargetingWithoutCalibrationTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE
@@ -31,6 +32,7 @@ set(ROBOT_SIM_SOURCE
   RobotSimulatorEmergencyPhase.cxx
   RobotTestSimulator.cxx
   TestBase.cxx
+  RobotStatus.cxx
 )
 
 ADD_EXECUTABLE(RobotTestSimulator  ${ROBOT_SIM_SOURCE})

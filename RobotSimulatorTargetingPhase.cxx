@@ -43,7 +43,18 @@ int RobotSimulatorTargetingPhase::Initialize()
   
   // Send Status after waiting for 2 seconds (mimicking initialization process)
   igtl::Sleep(1000); // wait for 1000 msec
-  this->SendStatusMessage(this->Name(), 1, 0);
+
+  // If the robot has not been calibrated, return device-not-ready error
+  igtl::Matrix4x4 cmatrix;
+  if (!this->RStatus || !this->RStatus->GetCalibrationMatrix(cmatrix))
+    {
+    std::cerr << "ERROR: Attempting to start TARGETING without calibration." << std::endl;
+    this->SendStatusMessage(this->Name(), igtl::StatusMessage::STATUS_NOT_READY, 0);
+    }
+  else
+    {
+    this->SendStatusMessage(this->Name(), igtl::StatusMessage::STATUS_OK, 0);
+    }
   
   return 1;
 

@@ -23,6 +23,7 @@
 #include "NavigationNormalOperationTest.h"
 #include "NavigationStartUpErrorTest.h"
 #include "NavigationCalibrationErrorTest.h"
+#include "NavigationTargetingWithoutCalibrationTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -81,6 +82,12 @@ int main(int argc, char* argv[])
     case 3:
       {
       navTest = (NavigationCalibrationErrorTest*) new NavigationCalibrationErrorTest();
+      break;
+      }
+    case 4:
+      {
+      navTest = (NavigationTargetingWithoutCalibrationTest*) new NavigationTargetingWithoutCalibrationTest();
+      break;
       }
     default:
       break;

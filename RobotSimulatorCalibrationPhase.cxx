@@ -70,6 +70,10 @@ int RobotSimulatorCalibrationPhase::MessageHandler(igtl::MessageHeader* headerMs
 
     if (ValidateMatrix(matrix))
       {
+      if (this->RStatus)
+        {
+        this->RStatus->SetCalibrationMatrix(matrix);
+        }
       SendStatusMessage("CALIBRATION", igtl::StatusMessage::STATUS_OK, 0);
       }
     else

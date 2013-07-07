@@ -23,16 +23,16 @@
 #include <string>
 #include <vector>
 
-#include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
-#include "igtlTransformMessage.h"
-#include "igtlImageMessage.h"
+//#include "igtlOSUtil.h"
+//#include "igtlMessageHeader.h"
+//#include "igtlTransformMessage.h"
+//#include "igtlImageMessage.h"
 #include "igtlServerSocket.h"
-#include "igtlStatusMessage.h"
-#include "igtlPositionMessage.h"
-#include "igtlPointMessage.h"
-#include "igtlStringMessage.h"
-#include "igtlBindMessage.h"
+//#include "igtlStatusMessage.h"
+//#include "igtlPositionMessage.h"
+//#include "igtlPointMessage.h"
+//#include "igtlStringMessage.h"
+//#include "igtlBindMessage.h"
 
 #include "RobotSimulatorPhaseBase.h"
 #include "RobotSimulatorUndefinedPhase.h"
@@ -44,6 +44,8 @@
 #include "RobotSimulatorManualPhase.h"
 #include "RobotSimulatorStopPhase.h"
 #include "RobotSimulatorEmergencyPhase.h"
+#include "RobotStatus.h"
+
 
 typedef std::vector< RobotSimulatorPhaseBase* > WorkphaseList;
 
@@ -169,14 +171,16 @@ int main(int argc, char* argv[])
 
 int Session(igtl::Socket * socket, WorkphaseList& wlist)
 {
+  RobotStatus * rs = new RobotStatus();
 
   //------------------------------------------------------------
-  // Set socket.
+  // Set socket and robot status
   std::vector< RobotSimulatorPhaseBase* >::iterator iter;
   for (iter = wlist.begin(); iter != wlist.end(); iter ++)
     {
     //std::cerr << "MESSAGE: Setting up " << (*iter)->Name() << " phase." << std::endl;
     (*iter)->SetSocket(socket);
+    (*iter)->SetRobotStatus(rs);
     }
 
   //------------------------------------------------------------

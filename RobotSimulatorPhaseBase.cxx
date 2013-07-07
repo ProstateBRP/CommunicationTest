@@ -29,6 +29,7 @@
 RobotSimulatorPhaseBase::RobotSimulatorPhaseBase()
 {
   this->NextWorkphase.clear();
+  this->RStatus = NULL;
 }
 
 

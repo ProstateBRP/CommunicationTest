@@ -25,6 +25,8 @@
 #include "igtlMath.h"
 #include "igtlMessageBase.h"
 #include "TestBase.h"
+#include "RobotStatus.h"
+
 
 class RobotSimulatorPhaseBase : public TestBase
 {
@@ -65,6 +67,8 @@ public:
   std::list< std::string > GetDefectTypeList();
   std::string GetDefectTypeDescription(const char * type);
 
+  void SetRobotStatus(RobotStatus* rs) { this->RStatus = rs; };
+
 protected:
 
   // Check if a CMD message (workphase change) has been received.
@@ -83,6 +87,9 @@ protected:
 
   std::map< std::string, int > DefectStatus;
   std::map< std::string, std::string > DefectDescription;
+
+  RobotStatus* RStatus;
+
 };
 
 #endif //__RobotSimulatorPhaseBase_h
