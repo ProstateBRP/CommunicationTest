@@ -39,31 +39,24 @@ start the NavigationTestSimulator:
 
     $ ./NavigationTestSimulator localhost 18944 1
 
-The last argument '1' is the test number (1-10). Currently, only Test #1 is supported (July 1, 2013).
+The last argument '1' is the test number (1-10). Currently, only tests #1-4 are supported (July 7, 2013).
 If the program has connected to the RobotTestSimulator successfully, you will see the following
 messages on the terminal, where you launched the RobotTestSimulator:
 
-    Client connected. Starting a session...
-    Setting up UNDEFINED phase.
-    Setting up START_UP phase.
-    Setting up PLANNING phase.
-    Setting up CALIBRATION phase.
-    Setting up TARGETING phase.
-    Setting up MOVE_TO_TARGET phase.
-    Setting up MANUAL phase.
-    Setting up STOP phase.
-    Setting up EMERGENCY phase.
+    MESSAGE: Defect status:
+    MESSAGE:    START_UP:DNR  :  OFF
+    MESSAGE: Client connected. Starting a session...
     MESSAGE: Sending STRING( ACK_0001, START_UP )
     MESSAGE: Sending STATUS( START_UP )
     MESSAGE: Sending STRING( ACK_0002, PLANNING )
     MESSAGE: Sending STRING( ACK_0003, CALIBRATION )
-    Receiving TRANSFORM data type.
+    MESSAGE: Receiving TRANSFORM data type.
     
     MESSAGE: Sending TRANSFORM( ACK_0004 )
     MESSAGE: Sending STATUS( CALIBRATION )
     MESSAGE: Sending STRING( ACK_0005, TARGETING )
     MESSAGE: Sending STATUS( TARGETING )
-    Receiving TRANSFORM data type.
+    MESSAGE: Receiving TRANSFORM data type.
     
     MESSAGE: Sending TRANSFORM( ACK_0006 )
     MESSAGE: Sending STATUS( TARGET )
@@ -87,7 +80,7 @@ messages on the terminal, where you launched the RobotTestSimulator:
     MESSAGE: Sending STATUS( STOP )
     MESSAGE: Sending STRING( ACK_0010, EMERGENCY )
     MESSAGE: Sending STATUS( EMERGENCY )
-    ERROR: Receiving message.
+    MESSAGE: Socket closed.
 
 At the same time, you will see messages on the terminal for the NavigationTestSimulator, too.
 
@@ -112,14 +105,14 @@ At the same time, you will see messages on the terminal for the NavigationTestSi
     MESSAGE: The test has been completed successfully.
 
 
+To simulate hardware (e.g. test 2 -- start-up witout connecting the device to the robot control computer), the RobotTestSimulator can activate 'defects'. For example, you can simulate device-not-ready error in START_UP phase by the following command:
 
+    $ ./RobotTestSimulator 18944 START_UP:DNR
 
+When the program starts, it will show the following message
 
-
-
-
-
-
-
+    MESSAGE: Defect status:
+    MESSAGE:    START_UP:DNR  :  ON
+                                ^^^^
 
 
