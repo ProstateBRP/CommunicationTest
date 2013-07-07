@@ -114,7 +114,7 @@ int Session(igtl::Socket * socket)
   std::vector< RobotSimulatorPhaseBase* >::iterator iter;
   for (iter = workphase.begin(); iter != workphase.end(); iter ++)
     {
-    std::cerr << "Setting up " << (*iter)->Name() << " phase." << std::endl;
+    std::cerr << "MESSAGE: Setting up " << (*iter)->Name() << " phase." << std::endl;
     (*iter)->SetSocket(socket);
     }
 

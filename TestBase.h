@@ -62,7 +62,7 @@ public:
   int ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode,
                     std::string& name, std::string& status);
 
-  int PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix);
+  void PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix);
 protected:
 
   igtl::Socket::Pointer Socket;

@@ -44,12 +44,13 @@ int NavigationTestBase::Exec()
     if (errorPoint == SUCCESS)
       {
       std::cerr << "MESSAGE: The test has been completed successfully." << std::endl;
+      return 1;
       }
     else
       {
       std::cerr << "ERROR: Test failed at check point #" << GetStep(errorPoint) << "." << GetPoint(errorPoint) << std::endl;
+      return 0;
       }
-
     }
   else
     {

@@ -401,7 +401,7 @@ void TestBase::GetRandomTestMatrix(igtl::Matrix4x4& matrix)
 
 int TestBase::ReceiveTransform(igtl::MessageHeader* header, igtl::Matrix4x4& matrix)
 {
-  std::cerr << "Receiving TRANSFORM data type." << std::endl;
+  std::cerr << "MESSAGE: Receiving TRANSFORM data type." << std::endl;
   
   // Create a message buffer to receive transform data
   igtl::TransformMessage::Pointer transMsg;
@@ -431,7 +431,7 @@ int TestBase::ReceiveTransform(igtl::MessageHeader* header, igtl::Matrix4x4& mat
 int TestBase::ReceiveString(igtl::MessageHeader* header, std::string& string)
 {
 
-  std::cerr << "Receiving STRING data type." << std::endl;
+  std::cerr << "MESSAGE: Receiving STRING data type." << std::endl;
 
   // Create a message buffer to receive transform data
   igtl::StringMessage::Pointer stringMsg;
@@ -461,7 +461,7 @@ int TestBase::ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode
                   std::string& name, std::string& status)
 {
 
-  std::cerr << "Receiving STATUS data type." << std::endl;
+  std::cerr << "MESSAGE: Receiving STATUS data type." << std::endl;
 
   // Create a message buffer to receive transform data
   igtl::StatusMessage::Pointer statusMsg;
@@ -495,7 +495,7 @@ int TestBase::ReceiveStatus(igtl::MessageHeader* header, int& code, int& subcode
 
 }
 
-int TestBase::PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix)
+void TestBase::PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix)
 {
   std::cout << prefix << " [" << matrix[0][0] << ", " << matrix[0][1] << ", " << matrix[0][2] << ", " << matrix[0][3] << "]" << std::endl;
   std::cout << prefix << " [" << matrix[1][0] << ", " << matrix[1][1] << ", " << matrix[1][2] << ", " << matrix[1][3] << "]" << std::endl;
