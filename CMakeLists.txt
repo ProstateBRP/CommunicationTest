@@ -20,6 +20,7 @@ set(NAVIGATION_SIM_SOURCE
   NavigationOutOfRangeTest.cxx
   NavigationStopDuringOperationTest.cxx
   NavigationEmergencyStopDuringOperationTest.cxx
+  NavigationMoveToWithoutTargetTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE
