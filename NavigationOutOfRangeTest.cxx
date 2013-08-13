@@ -63,12 +63,8 @@ NavigationOutOfRangeTest::ErrorPointType NavigationOutOfRangeTest::Test()
   igtl::IdentityMatrix(matrix1);
   SendTransformMessage("CLB_0004", matrix1);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
-  igtl::Matrix4x4 matrix2;
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix2)) return Error(3,2);
-  if (!CompareMatrices(matrix1, matrix2, 1.0e-5))
-    {
-    return Error(3,3);
-    }
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix1)) return Error(3,2);
+  // TODO: How can we differenciate Error(3,2) and Error(3,3)?
   
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "CALIBRATION", 1)) return Error(3,4);
@@ -87,8 +83,7 @@ NavigationOutOfRangeTest::ErrorPointType NavigationOutOfRangeTest::Test()
   SendTransformMessage("TGT_0006", matrix3);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
 
-  igtl::Matrix4x4 matrix4;
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix4)) return Error(4,3);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix3)) return Error(4,3);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   
   // Should receive configuration error

@@ -59,11 +59,12 @@ NavigationNormalOperationTest::ErrorPointType NavigationNormalOperationTest::Tes
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0003", "CALIBRATION")) return Error(3,1);
 
   igtl::Matrix4x4 matrix;
-  GetRandomTestMatrix(matrix);
+  //GetRandomTestMatrix(matrix);
+  igtl::IdentityMatrix(matrix);
   SendTransformMessage("CLB_0004", matrix);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix)) return Error(3,2);
-  // TODO: How can we differenciate Error(3,2) and Error(3,4)?
+  // TODO: How can we differenciate Error(3,2) and Error(3,3)?
   
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "CALIBRATION", 1)) return Error(3,4);
@@ -75,8 +76,9 @@ NavigationNormalOperationTest::ErrorPointType NavigationNormalOperationTest::Tes
 
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "TARGETING", 1)) return Error(4,2);
-  
-  GetRandomTestMatrix(matrix);
+
+  //GetRandomTestMatrix(matrix);
+  igtl::IdentityMatrix(matrix);  
   SendTransformMessage("TGT_0006", matrix);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix)) return Error(4,3);
