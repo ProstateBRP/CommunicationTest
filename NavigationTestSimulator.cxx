@@ -25,6 +25,8 @@
 #include "NavigationCalibrationErrorTest.h"
 #include "NavigationTargetingWithoutCalibrationTest.h"
 #include "NavigationOutOfRangeTest.h"
+#include "NavigationStopDuringOperationTest.h"
+#include "NavigationEmergencyStopDuringOperationTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -93,6 +95,16 @@ int main(int argc, char* argv[])
     case 5:
       {
       navTest = (NavigationOutOfRangeTest*) new NavigationOutOfRangeTest();
+      break;
+      }
+    case 6:
+      {
+      navTest = (NavigationStopDuringOperationTest*) new NavigationStopDuringOperationTest();
+      break;
+      }
+    case 7:
+      {
+      navTest = (NavigationEmergencyStopDuringOperationTest*) new NavigationEmergencyStopDuringOperationTest();
       break;
       }
     default:

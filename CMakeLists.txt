@@ -18,6 +18,8 @@ set(NAVIGATION_SIM_SOURCE
   NavigationCalibrationErrorTest.cxx
   NavigationTargetingWithoutCalibrationTest.cxx
   NavigationOutOfRangeTest.cxx
+  NavigationStopDuringOperationTest.cxx
+  NavigationEmergencyStopDuringOperationTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE
