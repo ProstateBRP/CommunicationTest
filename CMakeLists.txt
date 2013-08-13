@@ -22,6 +22,7 @@ set(NAVIGATION_SIM_SOURCE
   NavigationEmergencyStopDuringOperationTest.cxx
   NavigationMoveToWithoutTargetTest.cxx
   NavigationAccidentalCommandDuringManualModeTest.cxx
+  NavigationHardwareErrorDuringOperationTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE

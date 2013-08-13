@@ -29,6 +29,7 @@
 #include "NavigationEmergencyStopDuringOperationTest.h"
 #include "NavigationMoveToWithoutTargetTest.h"
 #include "NavigationAccidentalCommandDuringManualModeTest.h"
+#include "NavigationHardwareErrorDuringOperationTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -119,7 +120,11 @@ int main(int argc, char* argv[])
       navTest = (NavigationAccidentalCommandDuringManualModeTest*) new NavigationAccidentalCommandDuringManualModeTest();
       break;
       }
-
+    case 10:
+      {
+      navTest = (NavigationHardwareErrorDuringOperationTest*) new NavigationHardwareErrorDuringOperationTest();
+      break;
+      }
     default:
       break;
     }
