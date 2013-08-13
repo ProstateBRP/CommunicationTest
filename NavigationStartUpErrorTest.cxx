@@ -52,9 +52,9 @@ NavigationStartUpErrorTest::ErrorPointType NavigationStartUpErrorTest::Test()
 
   std::cerr << "MESSAGE: ===== Step 1: START_UP =====" << std::endl;
   SendStringMessage("CMD_0001", "START_UP");
-  ReceiveMessageHeader(headerMsg, 1000);
+  ReceiveMessageHeader(headerMsg, this->TimeoutShort);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return Error(1,1);
-  ReceiveMessageHeader(headerMsg, 10000);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", igtl::StatusMessage::STATUS_NOT_READY)) return Error(1,2);
 
   return SUCCESS;
