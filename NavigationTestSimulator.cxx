@@ -24,6 +24,7 @@
 #include "NavigationStartUpErrorTest.h"
 #include "NavigationCalibrationErrorTest.h"
 #include "NavigationTargetingWithoutCalibrationTest.h"
+#include "NavigationOutOfRangeTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -87,6 +88,11 @@ int main(int argc, char* argv[])
     case 4:
       {
       navTest = (NavigationTargetingWithoutCalibrationTest*) new NavigationTargetingWithoutCalibrationTest();
+      break;
+      }
+    case 5:
+      {
+      navTest = (NavigationOutOfRangeTest*) new NavigationOutOfRangeTest();
       break;
       }
     default:

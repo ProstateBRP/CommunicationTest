@@ -17,6 +17,7 @@ set(NAVIGATION_SIM_SOURCE
   NavigationStartUpErrorTest.cxx
   NavigationCalibrationErrorTest.cxx
   NavigationTargetingWithoutCalibrationTest.cxx
+  NavigationOutOfRangeTest.cxx
 )
 
 set(ROBOT_SIM_SOURCE

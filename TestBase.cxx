@@ -529,3 +529,21 @@ int TestBase::ValidateMatrix(igtl::Matrix4x4& matrix)
 
   return 1;
 }
+
+
+int TestBase::CompareMatrices(igtl::Matrix4x4& matrix1, igtl::Matrix4x4& matrix2, double tol)
+{
+  
+  // Check if each column is normal:
+  for (int i = 0; i < 3; i ++)
+    {
+    for (int j = 0; j < 3; j ++)
+      {
+      if (abs(matrix1[i][j] - matrix2[i][j]) > tol)
+        {
+        return 0;
+        }
+      }
+    }
+  return 1;
+}

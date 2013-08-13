@@ -63,7 +63,11 @@ public:
                     std::string& name, std::string& status);
 
   void PrintMatrix(std::string prefix, igtl::Matrix4x4& matrix);
-  int ValidateMatrix(igtl::Matrix4x4& matrix);
+  int  ValidateMatrix(igtl::Matrix4x4& matrix);
+
+  // Compare two matrices. If there is any corresponding elements with error larger than 'tol', return 0.
+  // Otherwise, it returns 1.
+  int  CompareMatrices(igtl::Matrix4x4& matrix1, igtl::Matrix4x4& matrix2, double tol);
 
 protected:
 
