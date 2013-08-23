@@ -88,7 +88,7 @@ NavigationOutOfRangeTest::ErrorPointType NavigationOutOfRangeTest::Test()
   
   // Should receive configuration error
   if (!CheckAndReceiveStatusMessage(headerMsg, "TARGET", 10)) return Error(4,5); 
-  ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
+  //ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   
   return SUCCESS;
 }

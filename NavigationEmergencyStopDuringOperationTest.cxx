@@ -127,7 +127,7 @@ NavigationEmergencyStopDuringOperationTest::ErrorPointType NavigationEmergencySt
       }
     else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
       {
-      if (!CheckAndReceiveStringMessage(headerMsg, "CMD_0008", "EMERGENCY")) return Error(6,1);
+      if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0008", "EMERGENCY")) return Error(6,1);
       fEmergencyAcknowledged = 1;
       }
     else if (strcmp(headerMsg->GetDeviceType(), "STATUS") == 0)

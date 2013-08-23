@@ -116,6 +116,7 @@ NavigationStopDuringOperationTest::ErrorPointType NavigationStopDuringOperationT
         {
         fCurrentPositionReceived = 1;
         count ++;
+	std::cerr << "Number of updates received = " << count <<std::endl;
         // after receiving current position 5 times, send stop command
         if (count > 5)
           {
@@ -127,13 +128,13 @@ NavigationStopDuringOperationTest::ErrorPointType NavigationStopDuringOperationT
       }
     else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
       {
-      if (!CheckAndReceiveStringMessage(headerMsg, "CMD_0008", "STOP")) return Error(6,1);
+      if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0008", "STOP")) return Error(6,1);
       fStopAcknowledged = 1;
       }
     else if (strcmp(headerMsg->GetDeviceType(), "STATUS") == 0)
       {
       if (!fStopAcknowledged) return Error(6,1);
-      if (!CheckAndReceiveStatusMessage(headerMsg, "EMERGENCY", 1)) return Error(6,2);
+      if (!CheckAndReceiveStatusMessage(headerMsg, "STOP", 1)) return Error(6,2);
       fStopStatusConfirmed = 1;
       break;
       }
