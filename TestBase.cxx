@@ -141,7 +141,8 @@ int TestBase::CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
 
 
 int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
-                                           const char* name, int code, int suffix)
+                                           const char* name, int code, int suffix,
+                                           const char* errorName)
 {
   
   int success = 0;
@@ -177,7 +178,22 @@ int TestBase::CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
       {
       if (statusMsg->GetCode() == code)
         {
-        success = 1;
+        if (errorName)
+          {
+          if (strcmp(statusMsg->GetErrorName(), errorName) == 0)
+            {
+            success = 1;
+            }
+          else
+            {
+            std::cerr << "ERROR: Invalid Error Name: " << statusMsg->GetErrorName() << std::endl;
+            success = 0;
+            }
+          }
+        else
+          {
+          success = 1;
+          }
         }
       else
         {
@@ -343,7 +359,8 @@ int TestBase::SendTransformMessage(const char* name, igtl::Matrix4x4& matrix)
 }
 
 
-int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
+int TestBase::SendStatusMessage(const char* name, int Code, int SubCode,
+                                const char * errorName, const char* statusString)
 {
   std::cerr << "MESSAGE: Sending STATUS( " << name << " )" << std::endl;
 
@@ -353,8 +370,22 @@ int TestBase::SendStatusMessage(const char* name, int Code, int SubCode)
 
   statusMsg->SetCode(Code);
   statusMsg->SetSubCode(SubCode);
-  statusMsg->SetErrorName("");
-  statusMsg->SetStatusString("");
+  if (errorName)
+    {
+    statusMsg->SetErrorName(errorName);
+    }
+  else
+    {
+    statusMsg->SetErrorName("");
+    }
+  if (statusString)
+    {
+    statusMsg->SetStatusString(statusString);
+    }
+  else
+    {
+    statusMsg->SetStatusString("");
+    }
   statusMsg->Pack();
   int r = this->Socket->Send(statusMsg->GetPackPointer(), statusMsg->GetPackSize());
   if (!r)

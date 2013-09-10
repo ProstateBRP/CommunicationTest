@@ -41,7 +41,8 @@ public:
   int  SkipMesage(igtl::MessageHeader* headerMsg);
   void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
   int  SendStringMessage(const char* name, const char* string);
-  int  SendStatusMessage(const char* name, int Code, int SubCode);
+  int  SendStatusMessage(const char* name, int Code, int SubCode,
+                         const char * errorName=NULL, const char* statusString=NULL);
   int  SendTransformMessage(const char* name, igtl::Matrix4x4& matrix);
 
   /// Check if the received messsage is STRING message, and if the message has
@@ -52,7 +53,8 @@ public:
   int  CheckAndReceiveStringMessage(igtl::MessageHeader* headerMsg,
                                     const char* name, const char* string, int suffix=0);
   int  CheckAndReceiveStatusMessage(igtl::MessageHeader* headerMsg,
-                                    const char* name, int code, int suffix=0);
+                                    const char* name, int code, int suffix=0,
+                                    const char* errorName=NULL);
   int  CheckAndReceiveTransformMessage(igtl::MessageHeader* headerMsg,
                                        const char* name, igtl::Matrix4x4& matrix,
                                        double err = 1.0e-10, int suffix=0);

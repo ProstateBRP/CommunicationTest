@@ -44,6 +44,11 @@ int RobotSimulatorPhaseBase::Enter(const char* queryID)
   std::stringstream ss;
   ss << "ACK_" << queryID;
   this->SendStringMessage(ss.str().c_str(), this->Name());
+
+  // Send phase message
+  // TODO: Check if the phase transition is allowed
+  this->SendStatusMessage("CURRENT_STATUS", 1, 0, this->Name());
+
   return this->Initialize();
 }
 
