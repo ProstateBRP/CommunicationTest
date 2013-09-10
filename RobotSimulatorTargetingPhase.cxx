@@ -76,6 +76,8 @@ int RobotSimulatorTargetingPhase::MessageHandler(igtl::MessageHeader* headerMsg)
     igtl::Matrix4x4 matrix;
     this->ReceiveTransform(headerMsg, matrix);
     
+    this->RStatus->SetTargetMatrix(matrix);
+
     std::string devName = headerMsg->GetDeviceName();
     std::stringstream ss;
     ss << "ACK_" << devName.substr(4, std::string::npos);

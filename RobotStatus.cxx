@@ -64,7 +64,7 @@ int RobotStatus::GetCalibrationMatrix(igtl::Matrix4x4& matrix)
 
 void RobotStatus::SetTargetMatrix(igtl::Matrix4x4& matrix)
 {
-  this->FlagCalibration = 1;
+  this->FlagTarget = 1;
 
   for (int i = 0; i < 4; i ++)
     {
@@ -79,7 +79,7 @@ void RobotStatus::SetTargetMatrix(igtl::Matrix4x4& matrix)
 
 int RobotStatus::GetTargetMatrix(igtl::Matrix4x4& matrix)
 {
-  if (this->FlagCalibration)
+  if (this->FlagTarget)
     {
     for (int i = 0; i < 4; i ++)
       {

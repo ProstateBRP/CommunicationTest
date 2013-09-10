@@ -47,35 +47,42 @@ NavigationOutOfRangeTest::ErrorPointType NavigationOutOfRangeTest::Test()
   ReceiveMessageHeader(headerMsg, this->TimeoutShort);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return Error(1,1);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return Error(1,2);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "START_UP")) return Error(1,2);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return Error(1,3);
 
   std::cerr << "MESSAGE: ===== Step 2: PLANNING =====" << std::endl;
   SendStringMessage("CMD_0002", "PLANNING");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0002", "PLANNING")) return Error(2,1);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "PLANNING")) return Error(2,2);
 
   std::cerr << "MESSAGE: ===== Step 3: CALIBRATION =====" << std::endl;
   SendStringMessage("CMD_0003", "CALIBRATION");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0003", "CALIBRATION")) return Error(3,1);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "CALIBRATION")) return Error(3,2);
 
   igtl::Matrix4x4 matrix1;
   igtl::IdentityMatrix(matrix1);
   SendTransformMessage("CLB_0004", matrix1);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix1)) return Error(3,2);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix1)) return Error(3,3);
   // TODO: How can we differenciate Error(3,2) and Error(3,3)?
   
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "CALIBRATION", 1)) return Error(3,4);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CALIBRATION", 1)) return Error(3,5);
   
   std::cerr << "MESSAGE: ===== Step 4: TARGETING =====" << std::endl;
   SendStringMessage("CMD_0005", "TARGETING");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0005", "TARGETING")) return Error(4,1);
-
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGETING", 1)) return Error(4,2);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "TARGETING")) return Error(4,2);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGETING", 1)) return Error(4,3);
 
   igtl::Matrix4x4 matrix3;  
   igtl::IdentityMatrix(matrix3);  
@@ -83,11 +90,11 @@ NavigationOutOfRangeTest::ErrorPointType NavigationOutOfRangeTest::Test()
   SendTransformMessage("TGT_0006", matrix3);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
 
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix3)) return Error(4,3);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix3)) return Error(4,4);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   
   // Should receive configuration error
-  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGET", 10)) return Error(4,5); 
+  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGET", 10)) return Error(4,6); 
   //ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   
   return SUCCESS;

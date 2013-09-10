@@ -46,24 +46,30 @@ NavigationHardwareErrorDuringOperationTest::ErrorPointType NavigationHardwareErr
   ReceiveMessageHeader(headerMsg, this->TimeoutShort);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return Error(1,1);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return Error(1,2);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "START_UP")) return Error(1,2);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return Error(1,3);
 
   std::cerr << "MESSAGE: ===== Step 2: PLANNING =====" << std::endl;
   SendStringMessage("CMD_0002", "PLANNING");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0002", "PLANNING")) return Error(2,1);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "PLANNING")) return Error(2,2);
   
   std::cerr << "MESSAGE: ===== Step 3: CALIBRATION =====" << std::endl;
   SendStringMessage("CMD_0003", "CALIBRATION");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0003", "CALIBRATION")) return Error(3,1);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "CALIBRATION")) return Error(3,2);
 
   igtl::Matrix4x4 matrix;
   //GetRandomTestMatrix(matrix);
   igtl::IdentityMatrix(matrix);
   SendTransformMessage("CLB_0004", matrix);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix)) return Error(3,2);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0004", matrix)) return Error(3,3);
   // TODO: How can we differenciate Error(3,2) and Error(3,3)?
   
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
@@ -73,24 +79,27 @@ NavigationHardwareErrorDuringOperationTest::ErrorPointType NavigationHardwareErr
   SendStringMessage("CMD_0005", "TARGETING");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0005", "TARGETING")) return Error(4,1);
-
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGETING", 1)) return Error(4,2);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "TARGETING")) return Error(4,2);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGETING", 1)) return Error(4,3);
 
   //GetRandomTestMatrix(matrix);
   igtl::IdentityMatrix(matrix);  
   SendTransformMessage("TGT_0006", matrix);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
-  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix)) return Error(4,3);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "ACK_0006", matrix)) return Error(4,4);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGET", 1)) return Error(4,5);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "TARGET", 1)) return Error(4,6);
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
-  if (!CheckAndReceiveTransformMessage(headerMsg, "TARGET", matrix)) return Error(4,6);
+  if (!CheckAndReceiveTransformMessage(headerMsg, "TARGET", matrix)) return Error(4,7);
   
   std::cerr << "MESSAGE: ===== Step 5: MOVE_TO_TARGET =====" << std::endl;
   SendStringMessage("CMD_0007", "MOVE_TO_TARGET");
   ReceiveMessageHeader(headerMsg, this->TimeoutMedium);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0007", "MOVE_TO_TARGET")) return Error(5,1);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "MOVE_TO_TARGET")) return Error(5,2);
 
   std::cerr << std::endl;
   std::cerr << "+-------------------- Instruction --------------------+" << std::endl;
@@ -126,7 +135,7 @@ NavigationHardwareErrorDuringOperationTest::ErrorPointType NavigationHardwareErr
       break;
       }
     }
-  if (!fStatusMessageReceived) return Error(6,1);
+  if (!fStatusMessageReceived) return Error(6,2);
 
   return SUCCESS;
 }

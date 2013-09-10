@@ -55,7 +55,9 @@ NavigationStartUpErrorTest::ErrorPointType NavigationStartUpErrorTest::Test()
   ReceiveMessageHeader(headerMsg, this->TimeoutShort);
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return Error(1,1);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
-  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", igtl::StatusMessage::STATUS_NOT_READY)) return Error(1,2);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "START_UP")) return Error(1,2);
+  ReceiveMessageHeader(headerMsg, this->TimeoutLong);
+  if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", igtl::StatusMessage::STATUS_NOT_READY)) return Error(1,3);
 
   return SUCCESS;
 }

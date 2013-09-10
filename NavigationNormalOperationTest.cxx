@@ -47,7 +47,6 @@ NavigationNormalOperationTest::ErrorPointType NavigationNormalOperationTest::Tes
   if (!CheckAndReceiveStringMessage(headerMsg, "ACK_0001", "START_UP")) return Error(1,1);
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "CURRENT_STATUS", 1, 0, "START_UP")) return Error(1,2);
-
   ReceiveMessageHeader(headerMsg, this->TimeoutLong);
   if (!CheckAndReceiveStatusMessage(headerMsg, "START_UP", 1)) return Error(1,3);
 
